@@ -56,12 +56,12 @@ export default function DashboardLayout({
             <CalendarRange className="size-4" aria-hidden="true" />
           </span>
           <span>
-            event<span className="text-primary">Hub</span>
+            Event<span className="text-primary">Hub</span>
           </span>
         </Link>
       </div>
-      <p className="px-5 pb-2 pt-4 font-mono text-xs lowercase tracking-wider text-sidebar-foreground/60">
-        {"// "}{title}
+      <p className="px-5 pb-2 pt-4 font-mono text-xs uppercase tracking-wider text-sidebar-foreground/60">
+        {title}
       </p>
       <nav className="flex flex-1 flex-col gap-1 px-3" aria-label={`${title} navigation`}>
         {navItems.map((item) => (

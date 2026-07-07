@@ -23,42 +23,42 @@ const features = [
     title: "Discovery",
     tag: "search + filters",
     description: "Search and filter events by category, city, and mode. Everything in one place instead of scattered group chats.",
-    rows: ["GET /events?category=tech", "GET /events?mode=online"],
+    rows: ["Filter by category, city & mode", "Online, offline & hybrid events"],
   },
   {
     icon: CalendarCheck,
     title: "Registration",
     tag: "one tap",
     description: "Register in seconds and instantly receive a ticket with a unique QR code. No more Google Forms.",
-    rows: ["POST /events/:id/register", "ticket + QR issued instantly"],
+    rows: ["One-tap registration", "Ticket + QR issued instantly"],
   },
   {
     icon: QrCode,
     title: "QR check-in",
     tag: "at the door",
     description: "Organizers scan your QR at the door. Attendance is tracked automatically and accurately.",
-    rows: ["POST /attendance/verify", "status: PRESENT"],
+    rows: ["Scan tickets at the door", "Attendance marked automatically"],
   },
   {
     icon: Award,
     title: "Certificates",
     tag: "auto-issued",
     description: "Attend an event and your certificate is generated automatically. Download it anytime.",
-    rows: ["GET /certificates/mine", "issued on attendance"],
+    rows: ["Issued on attendance", "Download anytime"],
   },
   {
     icon: BellRing,
     title: "Notifications",
     tag: "smart inbox",
     description: "Registration confirmations, reminders, venue changes, and certificate alerts in one inbox.",
-    rows: ["confirmations + reminders", "venue change alerts"],
+    rows: ["Confirmations & reminders", "Venue change alerts"],
   },
   {
     icon: BarChart3,
     title: "Analytics",
     tag: "live",
     description: "Organizers get live dashboards for registrations, attendance, ratings, and views.",
-    rows: ["registrations over time", "attendance + ratings"],
+    rows: ["Registrations over time", "Attendance & ratings"],
   },
 ]
 
@@ -92,9 +92,7 @@ export default function LandingPage() {
             </h1>
             <p className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground text-pretty">
               EventHub is a hub for the full event lifecycle — discovery, registration, QR check-in, and automatic
-              certificates — so communities stop juggling{" "}
-              <code className="rounded bg-secondary px-1.5 py-0.5 font-mono text-sm text-foreground">forms</code> and
-              spreadsheets.
+              certificates — so communities stop juggling forms and spreadsheets.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link to="/events">
@@ -124,11 +122,11 @@ export default function LandingPage() {
             </dl>
           </div>
 
-          {/* Lifecycle graph card */}
+          {/* Attendee journey card */}
           <div className="relative hidden md:block">
             <div className="rounded-2xl border border-border bg-card p-6 shadow-2xl shadow-black/10">
               <div className="flex items-center justify-between">
-                <span className="font-mono text-xs text-muted-foreground">event lifecycle · v1</span>
+                <span className="font-mono text-xs text-muted-foreground">your event journey</span>
                 <span className="flex gap-1.5" aria-hidden="true">
                   <span className="size-2.5 rounded-full bg-destructive/60" />
                   <span className="size-2.5 rounded-full bg-warning/60" />
@@ -137,10 +135,10 @@ export default function LandingPage() {
               </div>
               <div className="mt-5 flex flex-col gap-2.5">
                 {[
-                  { label: "GET /events", note: "discover", active: false },
-                  { label: "POST /events/:id/register", note: "ticket + QR", active: true },
-                  { label: "POST /attendance/verify", note: "checked in", active: false },
-                  { label: "GET /certificates/mine", note: "auto-issued", active: false },
+                  { icon: Search, label: "Discover events", note: "browse", active: false },
+                  { icon: CalendarCheck, label: "Register in one tap", note: "ticket + QR", active: true },
+                  { icon: QrCode, label: "Check in at the door", note: "scanned", active: false },
+                  { icon: Award, label: "Receive certificate", note: "auto-issued", active: false },
                 ].map((row) => (
                   <div
                     key={row.label}
@@ -150,8 +148,8 @@ export default function LandingPage() {
                         : "flex items-center justify-between rounded-xl border border-border bg-background px-4 py-3"
                     }
                   >
-                    <span className="flex items-center gap-2.5 font-mono text-sm text-foreground">
-                      <ChevronRight className={row.active ? "size-3.5 text-primary" : "size-3.5 text-muted-foreground"} aria-hidden="true" />
+                    <span className="flex items-center gap-2.5 text-sm font-semibold text-foreground">
+                      <row.icon className={row.active ? "size-4 text-primary" : "size-4 text-muted-foreground"} aria-hidden="true" />
                       {row.label}
                     </span>
                     <span className={row.active ? "font-mono text-xs text-accent-foreground" : "font-mono text-xs text-muted-foreground"}>
@@ -162,9 +160,9 @@ export default function LandingPage() {
               </div>
               <div className="mt-5 rounded-xl bg-secondary p-4">
                 <p className="font-mono text-xs leading-relaxed text-muted-foreground">
-                  <span className="text-success">✓</span> ticket EVT-2026-004821 scanned
+                  <span className="text-success">✓</span> ticket scanned at the door
                   <br />
-                  <span className="text-success">✓</span> attendance → PRESENT
+                  <span className="text-success">✓</span> attendance marked present
                   <br />
                   <span className="text-primary">→</span> certificate issued automatically
                 </p>
@@ -183,7 +181,7 @@ export default function LandingPage() {
       {/* Upcoming events */}
       <section className="border-t border-border">
         <div className="mx-auto max-w-6xl px-4 py-20 md:px-6">
-          <Eyebrow>/happening-soon</Eyebrow>
+          <Eyebrow>happening soon</Eyebrow>
           <div className="mt-5 mb-10 flex flex-wrap items-end justify-between gap-4">
             <h2 className="display text-3xl text-foreground md:text-5xl">
               Filling <span className="text-primary">fast.</span> Grab a seat.
@@ -215,7 +213,7 @@ export default function LandingPage() {
       {/* Features */}
       <section className="border-t border-border bg-card/40">
         <div className="mx-auto max-w-6xl px-4 py-20 md:px-6">
-          <Eyebrow>/explore the surface area</Eyebrow>
+          <Eyebrow>everything you need</Eyebrow>
           <h2 className="display mt-5 text-3xl text-foreground md:text-5xl">
             Six lanes. <span className="text-primary">One platform.</span>
           </h2>
@@ -256,7 +254,7 @@ export default function LandingPage() {
       {/* How it works */}
       <section className="border-t border-border">
         <div className="mx-auto max-w-6xl px-4 py-20 md:px-6">
-          <Eyebrow>{"// how it flows"}</Eyebrow>
+          <Eyebrow>how it works</Eyebrow>
           <h2 className="display mt-5 max-w-2xl text-3xl text-foreground md:text-5xl">
             From <span className="text-primary">sign-up</span> to certificate — four steps.
           </h2>

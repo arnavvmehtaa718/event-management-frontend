@@ -54,7 +54,7 @@ export default function EventsPage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 md:px-6">
       <div className="mb-10">
-        <Eyebrow>/events · {events.length} published</Eyebrow>
+        <Eyebrow>{events.length} events published</Eyebrow>
         <h1 className="display mt-4 text-4xl text-foreground md:text-5xl">
           Explore <span className="text-primary">events.</span>
         </h1>

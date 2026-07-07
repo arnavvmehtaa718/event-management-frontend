@@ -11,8 +11,7 @@ export function Footer() {
               <CalendarRange className="size-4" aria-hidden="true" />
             </span>
             <span>
-              event<span className="text-primary">Hub</span>
-              <span className="text-muted-foreground">.app</span>
+              Event<span className="text-primary">Hub</span>
             </span>
           </Link>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
@@ -40,7 +39,7 @@ export function Footer() {
       </div>
       <div className="border-t border-border py-4">
         <p className="mx-auto max-w-6xl px-4 font-mono text-xs text-muted-foreground md:px-6">
-          &copy; {new Date().getFullYear()} eventHub.app — all rights reserved
+          &copy; {new Date().getFullYear()} EventHub — all rights reserved
         </p>
       </div>
     </footer>

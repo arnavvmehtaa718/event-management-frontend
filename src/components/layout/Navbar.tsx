@@ -39,8 +39,7 @@ export function Navbar() {
             <CalendarRange className="size-4" aria-hidden="true" />
           </span>
           <span>
-            event<span className="text-primary">Hub</span>
-            <span className="text-muted-foreground">.app</span>
+            Event<span className="text-primary">Hub</span>
           </span>
         </Link>
 

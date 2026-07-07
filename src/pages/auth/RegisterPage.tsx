@@ -72,8 +72,7 @@ export default function RegisterPage() {
           <Link to="/" className="flex items-center gap-2 text-primary">
             <CalendarDays className="size-8" aria-hidden="true" />
             <span className="text-2xl font-extrabold tracking-tight text-foreground">
-              event<span className="text-primary">Hub</span>
-              <span className="text-muted-foreground">.app</span>
+              Event<span className="text-primary">Hub</span>
             </span>
           </Link>
           <p className="font-mono text-xs text-muted-foreground">create your account to get started</p>
