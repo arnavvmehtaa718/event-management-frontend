@@ -13,6 +13,7 @@ import {
 import { useAppDispatch, useAppSelector } from "@/app/store"
 import { logout } from "@/features/auth/authSlice"
 import { fetchNotifications } from "@/features/notifications/notificationSlice"
+import { ThemeToggle } from "@/components/common/ThemeToggle"
 import clsx from "clsx"
 
 export interface NavItem {
@@ -50,14 +51,16 @@ export default function DashboardLayout({
   const sidebar = (
     <div className="flex h-full flex-col">
       <div className="flex h-16 items-center gap-2 px-5">
-        <Link to="/" className="flex items-center gap-2 font-bold text-white">
+        <Link to="/" className="flex items-center gap-2.5 font-extrabold tracking-tight text-white">
           <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <CalendarRange className="size-4" aria-hidden="true" />
           </span>
-          EventHub
+          <span>
+            Event<span className="text-primary">Hub</span>
+          </span>
         </Link>
       </div>
-      <p className="px-5 pb-2 pt-4 text-xs font-semibold uppercase tracking-wider text-sidebar-foreground/60">
+      <p className="px-5 pb-2 pt-4 font-mono text-xs uppercase tracking-wider text-sidebar-foreground/60">
         {title}
       </p>
       <nav className="flex flex-1 flex-col gap-1 px-3" aria-label={`${title} navigation`}>
@@ -135,6 +138,7 @@ export default function DashboardLayout({
             </h1>
           </div>
           <div className="flex items-center gap-3">
+            <ThemeToggle />
             <Link
               to={notifPath}
               className="relative rounded-lg p-2 text-muted-foreground hover:bg-muted hover:text-foreground"

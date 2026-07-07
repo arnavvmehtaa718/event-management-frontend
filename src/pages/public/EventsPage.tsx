@@ -5,7 +5,7 @@ import { Search, SlidersHorizontal, CalendarX } from "lucide-react"
 import { getEvents } from "@/api/eventApi"
 import type { EventItem } from "@/constants/types"
 import { EventCard } from "@/components/cards/EventCard"
-import { Select, Skeleton, EmptyState } from "@/components/common/ui"
+import { Select, Skeleton, EmptyState, Eyebrow } from "@/components/common/ui"
 
 const categories = ["All", "Technology", "Business", "Education", "Health", "Arts", "Sports", "Community"]
 const modes = [
@@ -52,11 +52,14 @@ export default function EventsPage() {
   }, [events, search, category, mode, sort])
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10 md:px-6">
-      <div className="mb-8">
-        <h1 className="text-3xl font-extrabold tracking-tight text-foreground">Explore events</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {events.length} published events across every category.
+    <div className="mx-auto max-w-6xl px-4 py-12 md:px-6">
+      <div className="mb-10">
+        <Eyebrow>{events.length} events published</Eyebrow>
+        <h1 className="display mt-4 text-4xl text-foreground md:text-5xl">
+          Explore <span className="text-primary">events.</span>
+        </h1>
+        <p className="mt-3 text-sm text-muted-foreground">
+          Every category, every city — filtered your way.
         </p>
       </div>
 

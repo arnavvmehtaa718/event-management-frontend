@@ -84,18 +84,21 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-muted px-4 py-12">
-      <div className="w-full max-w-md">
-        <div className="mb-8 flex flex-col items-center gap-2">
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-12">
+      <div className="bg-grid bg-grid-fade pointer-events-none absolute inset-0 opacity-50" aria-hidden="true" />
+      <div className="relative w-full max-w-md">
+        <div className="mb-8 flex flex-col items-center gap-3">
           <Link to="/" className="flex items-center gap-2 text-primary">
             <CalendarDays className="size-8" aria-hidden="true" />
-            <span className="text-2xl font-bold text-foreground">EventHub</span>
+            <span className="text-2xl font-extrabold tracking-tight text-foreground">
+              Event<span className="text-primary">Hub</span>
+            </span>
           </Link>
-          <p className="text-sm text-muted-foreground">Sign in to your account to continue</p>
+          <p className="font-mono text-xs text-muted-foreground">sign in to continue</p>
         </div>
 
         <Card className="p-6 sm:p-8">
-          <h1 className="mb-6 text-xl font-bold text-foreground">Sign in</h1>
+          <h1 className="display mb-6 text-2xl text-foreground">Welcome back.</h1>
 
           {error && (
             <div role="alert" className="mb-4 rounded-lg bg-destructive/10 px-4 py-3 text-sm text-destructive">
@@ -136,8 +139,8 @@ export default function LoginPage() {
         </Card>
 
         <Card className="mt-4 p-4">
-          <p className="mb-3 text-center text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Demo accounts (password: password123)
+          <p className="mb-3 text-center font-mono text-xs text-muted-foreground">
+            demo accounts · password: password123
           </p>
           <div className="flex flex-wrap justify-center gap-2">
             {demoAccounts.map((d) => (

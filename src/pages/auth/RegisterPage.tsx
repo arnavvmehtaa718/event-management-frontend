@@ -65,18 +65,21 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-muted px-4 py-12">
-      <div className="w-full max-w-md">
-        <div className="mb-8 flex flex-col items-center gap-2">
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-12">
+      <div className="bg-grid bg-grid-fade pointer-events-none absolute inset-0 opacity-50" aria-hidden="true" />
+      <div className="relative w-full max-w-md">
+        <div className="mb-8 flex flex-col items-center gap-3">
           <Link to="/" className="flex items-center gap-2 text-primary">
             <CalendarDays className="size-8" aria-hidden="true" />
-            <span className="text-2xl font-bold text-foreground">EventHub</span>
+            <span className="text-2xl font-extrabold tracking-tight text-foreground">
+              Event<span className="text-primary">Hub</span>
+            </span>
           </Link>
-          <p className="text-sm text-muted-foreground">Create your account to get started</p>
+          <p className="font-mono text-xs text-muted-foreground">create your account to get started</p>
         </div>
 
         <Card className="p-6 sm:p-8">
-          <h1 className="mb-6 text-xl font-bold text-foreground">Create account</h1>
+          <h1 className="display mb-6 text-2xl text-foreground">Join the hub.</h1>
 
           <div className="mb-6 grid grid-cols-2 gap-3" role="radiogroup" aria-label="Account type">
             {(

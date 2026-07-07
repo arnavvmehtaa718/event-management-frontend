@@ -10,48 +10,55 @@ import {
   BarChart3,
   Search,
   CalendarCheck,
+  ChevronRight,
 } from "lucide-react"
 import { getUpcomingEvents, getPopularEvents } from "@/api/eventApi"
 import type { EventItem } from "@/constants/types"
 import { EventCard } from "@/components/cards/EventCard"
-import { Button, Skeleton } from "@/components/common/ui"
+import { Button, Skeleton, Eyebrow } from "@/components/common/ui"
 
 const features = [
   {
     icon: Search,
-    title: "Discover events",
-    description:
-      "Search and filter events by category, city, and mode. Everything in one place instead of scattered group chats.",
+    title: "Discovery",
+    tag: "search + filters",
+    description: "Search and filter events by category, city, and mode. Everything in one place instead of scattered group chats.",
+    rows: ["Filter by category, city & mode", "Online, offline & hybrid events"],
   },
   {
     icon: CalendarCheck,
-    title: "One-tap registration",
-    description:
-      "Register in seconds and instantly receive a ticket with a unique QR code — no more Google Forms.",
+    title: "Registration",
+    tag: "one tap",
+    description: "Register in seconds and instantly receive a ticket with a unique QR code. No more Google Forms.",
+    rows: ["One-tap registration", "Ticket + QR issued instantly"],
   },
   {
     icon: QrCode,
     title: "QR check-in",
-    description:
-      "Organizers scan your QR at the door. Attendance is tracked automatically and accurately.",
+    tag: "at the door",
+    description: "Organizers scan your QR at the door. Attendance is tracked automatically and accurately.",
+    rows: ["Scan tickets at the door", "Attendance marked automatically"],
   },
   {
     icon: Award,
-    title: "Automatic certificates",
-    description:
-      "Attend an event and your certificate is generated automatically — download it anytime.",
+    title: "Certificates",
+    tag: "auto-issued",
+    description: "Attend an event and your certificate is generated automatically. Download it anytime.",
+    rows: ["Issued on attendance", "Download anytime"],
   },
   {
     icon: BellRing,
-    title: "Smart notifications",
-    description:
-      "Registration confirmations, reminders, venue changes, and certificate alerts in one inbox.",
+    title: "Notifications",
+    tag: "smart inbox",
+    description: "Registration confirmations, reminders, venue changes, and certificate alerts in one inbox.",
+    rows: ["Confirmations & reminders", "Venue change alerts"],
   },
   {
     icon: BarChart3,
-    title: "Real-time analytics",
-    description:
-      "Organizers get live dashboards for registrations, attendance, ratings, and views.",
+    title: "Analytics",
+    tag: "live",
+    description: "Organizers get live dashboards for registrations, attendance, ratings, and views.",
+    rows: ["Registrations over time", "Attendance & ratings"],
   },
 ]
 
@@ -75,21 +82,17 @@ export default function LandingPage() {
   return (
     <div>
       {/* Hero */}
-      <section className="bg-sidebar text-white">
-        <div className="mx-auto grid max-w-7xl gap-10 px-4 py-16 md:grid-cols-2 md:items-center md:px-6 md:py-24">
+      <section className="relative overflow-hidden">
+        <div className="bg-grid bg-grid-fade pointer-events-none absolute inset-0 opacity-60" aria-hidden="true" />
+        <div className="relative mx-auto grid max-w-6xl gap-12 px-4 pb-20 pt-16 md:grid-cols-[1.1fr_0.9fr] md:items-center md:px-6 md:pb-28 md:pt-24">
           <div>
-            <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-sidebar-accent bg-sidebar-accent/50 px-3 py-1 text-xs font-semibold text-sidebar-foreground">
-              Events, tickets, attendance & certificates — unified
-            </p>
-            <h1 className="text-4xl font-extrabold leading-tight tracking-tight text-balance md:text-5xl">
-              Every event.
-              <br />
-              One platform.
+            <Eyebrow>events · tickets · certificates</Eyebrow>
+            <h1 className="display mt-6 text-5xl text-foreground md:text-7xl">
+              Real events to <span className="text-primary">discover</span>, join, and <span className="italic">run</span>.
             </h1>
-            <p className="mt-4 max-w-md text-base leading-relaxed text-sidebar-foreground text-pretty">
-              Stop juggling WhatsApp groups, Google Forms, and spreadsheets.
-              EventHub lets organizations run events end to end while attendees
-              discover, register, and collect certificates effortlessly.
+            <p className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground text-pretty">
+              EventHub is a hub for the full event lifecycle — discovery, registration, QR check-in, and automatic
+              certificates — so communities stop juggling forms and spreadsheets.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link to="/events">
@@ -99,100 +102,149 @@ export default function LandingPage() {
                 </Button>
               </Link>
               <Link to="/register">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="w-full border-sidebar-accent bg-transparent text-white hover:bg-sidebar-accent sm:w-auto"
-                >
+                <Button size="lg" variant="outline" className="w-full sm:w-auto">
                   Host an event
                 </Button>
               </Link>
             </div>
-            <dl className="mt-10 grid grid-cols-3 gap-6 border-t border-sidebar-accent pt-6">
+            <dl className="mt-12 grid grid-cols-3 gap-6 border-t border-border pt-6">
               {[
-                ["4,200+", "Events hosted"],
-                ["58k+", "Registrations"],
-                ["31k+", "Certificates issued"],
+                ["4,200+", "events hosted"],
+                ["58k+", "registrations"],
+                ["31k+", "certificates"],
               ].map(([value, label]) => (
                 <div key={label}>
                   <dt className="sr-only">{label}</dt>
-                  <dd className="text-2xl font-extrabold">{value}</dd>
-                  <dd className="text-xs text-sidebar-foreground">{label}</dd>
+                  <dd className="display text-2xl text-foreground md:text-3xl">{value}</dd>
+                  <dd className="mt-1 font-mono text-xs text-muted-foreground">{label}</dd>
                 </div>
               ))}
             </dl>
           </div>
+
+          {/* Attendee journey card */}
           <div className="relative hidden md:block">
-            <img
-              src="/events/tech-conf.png"
-              alt="A packed technology conference hosted on EventHub"
-              className="rounded-2xl border border-sidebar-accent object-cover shadow-2xl"
-            />
-            <div className="absolute -bottom-5 -left-5 flex items-center gap-3 rounded-xl border border-border bg-card p-4 shadow-xl">
-              <span className="flex size-10 items-center justify-center rounded-lg bg-success/10 text-success">
-                <QrCode className="size-5" aria-hidden="true" />
-              </span>
-              <div>
-                <p className="text-sm font-bold text-foreground">Checked in</p>
-                <p className="text-xs text-muted-foreground">Attendance marked PRESENT</p>
+            <div className="rounded-2xl border border-border bg-card p-6 shadow-2xl shadow-black/10">
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-xs text-muted-foreground">your event journey</span>
+                <span className="flex gap-1.5" aria-hidden="true">
+                  <span className="size-2.5 rounded-full bg-destructive/60" />
+                  <span className="size-2.5 rounded-full bg-warning/60" />
+                  <span className="size-2.5 rounded-full bg-success/60" />
+                </span>
+              </div>
+              <div className="mt-5 flex flex-col gap-2.5">
+                {[
+                  { icon: Search, label: "Discover events", note: "browse", active: false },
+                  { icon: CalendarCheck, label: "Register in one tap", note: "ticket + QR", active: true },
+                  { icon: QrCode, label: "Check in at the door", note: "scanned", active: false },
+                  { icon: Award, label: "Receive certificate", note: "auto-issued", active: false },
+                ].map((row) => (
+                  <div
+                    key={row.label}
+                    className={
+                      row.active
+                        ? "flex items-center justify-between rounded-xl border border-primary/40 bg-accent px-4 py-3"
+                        : "flex items-center justify-between rounded-xl border border-border bg-background px-4 py-3"
+                    }
+                  >
+                    <span className="flex items-center gap-2.5 text-sm font-semibold text-foreground">
+                      <row.icon className={row.active ? "size-4 text-primary" : "size-4 text-muted-foreground"} aria-hidden="true" />
+                      {row.label}
+                    </span>
+                    <span className={row.active ? "font-mono text-xs text-accent-foreground" : "font-mono text-xs text-muted-foreground"}>
+                      {row.note}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-5 rounded-xl bg-secondary p-4">
+                <p className="font-mono text-xs leading-relaxed text-muted-foreground">
+                  <span className="text-success">✓</span> ticket scanned at the door
+                  <br />
+                  <span className="text-success">✓</span> attendance marked present
+                  <br />
+                  <span className="text-primary">→</span> certificate issued automatically
+                </p>
               </div>
             </div>
+            <img
+              src="/events/tech-conf.png"
+              alt=""
+              aria-hidden="true"
+              className="absolute -bottom-8 -left-10 -z-10 w-64 rotate-[-4deg] rounded-2xl border border-border object-cover opacity-70"
+            />
           </div>
         </div>
       </section>
 
       {/* Upcoming events */}
-      <section className="mx-auto max-w-7xl px-4 py-16 md:px-6">
-        <div className="mb-8 flex items-end justify-between">
-          <div>
-            <h2 className="text-2xl font-extrabold tracking-tight text-foreground md:text-3xl">
-              Happening soon
+      <section className="border-t border-border">
+        <div className="mx-auto max-w-6xl px-4 py-20 md:px-6">
+          <Eyebrow>happening soon</Eyebrow>
+          <div className="mt-5 mb-10 flex flex-wrap items-end justify-between gap-4">
+            <h2 className="display text-3xl text-foreground md:text-5xl">
+              Filling <span className="text-primary">fast.</span> Grab a seat.
             </h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Don&apos;t miss out — these events are filling fast.
-            </p>
+            <Link
+              to="/events"
+              className="hidden items-center gap-1 font-mono text-sm text-primary hover:underline sm:flex"
+            >
+              view all events
+              <ArrowRight className="size-4" aria-hidden="true" />
+            </Link>
           </div>
-          <Link to="/events" className="hidden items-center gap-1 text-sm font-semibold text-primary hover:underline sm:flex">
-            View all events
-            <ArrowRight className="size-4" aria-hidden="true" />
-          </Link>
+          {loading ? (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {[0, 1, 2].map((i) => (
+                <Skeleton key={i} className="h-96" />
+              ))}
+            </div>
+          ) : (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {upcoming.map((e) => (
+                <EventCard key={e.id} event={e} />
+              ))}
+            </div>
+          )}
         </div>
-        {loading ? (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {[0, 1, 2].map((i) => (
-              <Skeleton key={i} className="h-96" />
-            ))}
-          </div>
-        ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {upcoming.map((e) => (
-              <EventCard key={e.id} event={e} />
-            ))}
-          </div>
-        )}
       </section>
 
       {/* Features */}
-      <section className="border-y border-border bg-card">
-        <div className="mx-auto max-w-7xl px-4 py-16 md:px-6">
-          <div className="mx-auto mb-12 max-w-2xl text-center">
-            <h2 className="text-2xl font-extrabold tracking-tight text-foreground md:text-3xl text-balance">
-              Everything you need to run and attend events
-            </h2>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              From discovery to certificates, the whole lifecycle lives in one platform.
-            </p>
-          </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <section className="border-t border-border bg-card/40">
+        <div className="mx-auto max-w-6xl px-4 py-20 md:px-6">
+          <Eyebrow>everything you need</Eyebrow>
+          <h2 className="display mt-5 text-3xl text-foreground md:text-5xl">
+            Six lanes. <span className="text-primary">One platform.</span>
+          </h2>
+          <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">
+            Each piece mirrors how real events actually run — so the whole lifecycle lives in one place, from the first
+            search to the final certificate.
+          </p>
+          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {features.map((f) => (
-              <div key={f.title} className="rounded-xl border border-border bg-background p-6">
-                <span className="mb-4 flex size-10 items-center justify-center rounded-lg bg-accent text-accent-foreground">
-                  <f.icon className="size-5" aria-hidden="true" />
-                </span>
-                <h3 className="font-bold text-foreground">{f.title}</h3>
-                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-                  {f.description}
-                </p>
+              <div
+                key={f.title}
+                className="group rounded-2xl border border-border bg-card p-6 transition-colors hover:border-primary/40"
+              >
+                <div className="flex items-start justify-between">
+                  <span className="flex size-11 items-center justify-center rounded-xl border border-border bg-background text-primary">
+                    <f.icon className="size-5" aria-hidden="true" />
+                  </span>
+                  <span className="rounded-full border border-border px-2.5 py-1 font-mono text-xs text-muted-foreground">
+                    {f.tag}
+                  </span>
+                </div>
+                <h3 className="mt-5 text-lg font-extrabold tracking-tight text-foreground">{f.title}</h3>
+                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{f.description}</p>
+                <div className="mt-4 flex flex-col gap-1.5 border-t border-border pt-4">
+                  {f.rows.map((row) => (
+                    <p key={row} className="flex items-center gap-2 font-mono text-xs text-muted-foreground">
+                      <ChevronRight className="size-3 text-primary" aria-hidden="true" />
+                      {row}
+                    </p>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
@@ -200,37 +252,43 @@ export default function LandingPage() {
       </section>
 
       {/* How it works */}
-      <section className="mx-auto max-w-7xl px-4 py-16 md:px-6">
-        <h2 className="mb-12 text-center text-2xl font-extrabold tracking-tight text-foreground md:text-3xl">
-          How it works
-        </h2>
-        <ol className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {steps.map((s) => (
-            <li key={s.step} className="relative">
-              <span className="font-mono text-4xl font-bold text-primary/20">{s.step}</span>
-              <h3 className="mt-2 font-bold text-foreground">{s.title}</h3>
-              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{s.text}</p>
-            </li>
-          ))}
-        </ol>
+      <section className="border-t border-border">
+        <div className="mx-auto max-w-6xl px-4 py-20 md:px-6">
+          <Eyebrow>how it works</Eyebrow>
+          <h2 className="display mt-5 max-w-2xl text-3xl text-foreground md:text-5xl">
+            From <span className="text-primary">sign-up</span> to certificate — four steps.
+          </h2>
+          <ol className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {steps.map((s) => (
+              <li key={s.step} className="rounded-2xl border border-border bg-card p-6">
+                <span className="font-mono text-sm text-primary">{s.step}</span>
+                <h3 className="mt-3 font-extrabold tracking-tight text-foreground">{s.title}</h3>
+                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{s.text}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
       </section>
 
       {/* CTA */}
-      <section className="mx-auto max-w-7xl px-4 pb-20 md:px-6">
-        <div className="flex flex-col items-center gap-6 rounded-2xl bg-primary px-6 py-14 text-center text-primary-foreground">
-          <h2 className="max-w-xl text-2xl font-extrabold tracking-tight md:text-3xl text-balance">
-            Ready to bring your community together?
-          </h2>
-          <p className="max-w-md text-sm leading-relaxed text-primary-foreground/85 text-pretty">
-            Create your organization account, publish your first event, and start
-            scanning attendees in minutes.
-          </p>
-          <Link to="/register">
-            <Button size="lg" variant="secondary">
-              Get started free
-              <ArrowRight className="size-4" aria-hidden="true" />
-            </Button>
-          </Link>
+      <section className="border-t border-border">
+        <div className="relative mx-auto max-w-6xl overflow-hidden px-4 py-24 md:px-6">
+          <div className="bg-grid pointer-events-none absolute inset-0 opacity-40" aria-hidden="true" />
+          <div className="relative flex flex-col items-center gap-6 text-center">
+            <Eyebrow>no forms · no spreadsheets · just events</Eyebrow>
+            <h2 className="display max-w-3xl text-4xl text-foreground md:text-6xl text-balance">
+              Ready to bring your community <span className="text-primary">together?</span>
+            </h2>
+            <p className="max-w-md text-sm leading-relaxed text-muted-foreground text-pretty">
+              Create your organization account, publish your first event, and start scanning attendees in minutes.
+            </p>
+            <Link to="/register">
+              <Button size="lg">
+                Get started free
+                <ArrowRight className="size-4" aria-hidden="true" />
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
     </div>
