@@ -88,7 +88,7 @@ export default function LandingPage() {
           <div>
             <Eyebrow>events · tickets · certificates</Eyebrow>
             <h1 className="display mt-6 text-5xl text-foreground md:text-7xl">
-              Real events to <span className="text-primary">discover</span>, join, and <span className="italic">run</span>.
+              Real events to <span className="text-primary">discover</span>, join, and <span className="italic">explore</span>.
             </h1>
             <p className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground text-pretty">
               EventHub is a hub for the full event lifecycle — discovery, registration, QR check-in, and automatic
