@@ -6,6 +6,7 @@ import { CalendarRange, Menu, X, LayoutDashboard, LogOut } from "lucide-react"
 import { useAppDispatch, useAppSelector } from "@/app/store"
 import { logout } from "@/features/auth/authSlice"
 import { Button } from "@/components/common/ui"
+import { ThemeToggle } from "@/components/common/ThemeToggle"
 import clsx from "clsx"
 
 const dashboardPath: Record<string, string> = {
@@ -21,20 +22,26 @@ export function Navbar() {
   const navigate = useNavigate()
 
   const links = [
-    { to: "/", label: "Home" },
-    { to: "/events", label: "Explore Events" },
-    { to: "/about", label: "About" },
-    { to: "/contact", label: "Contact" },
+    { to: "/", label: "home" },
+    { to: "/events", label: "events" },
+    { to: "/about", label: "about" },
+    { to: "/contact", label: "contact" },
   ]
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-card/90 backdrop-blur">
-      <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 md:px-6" aria-label="Main navigation">
-        <Link to="/" className="flex items-center gap-2 font-bold text-foreground">
+    <header className="sticky top-0 z-40 px-3 pt-3 md:px-6">
+      <nav
+        className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 rounded-2xl border border-border bg-card/85 px-3 shadow-lg shadow-black/5 backdrop-blur-md md:px-4"
+        aria-label="Main navigation"
+      >
+        <Link to="/" className="flex items-center gap-2.5 font-extrabold tracking-tight text-foreground">
           <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <CalendarRange className="size-4" aria-hidden="true" />
           </span>
-          EventHub
+          <span>
+            event<span className="text-primary">Hub</span>
+            <span className="text-muted-foreground">.app</span>
+          </span>
         </Link>
 
         <div className="hidden items-center gap-1 md:flex">
@@ -44,8 +51,8 @@ export function Navbar() {
               to={l.to}
               className={({ isActive }) =>
                 clsx(
-                  "rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-                  isActive ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:text-foreground",
+                  "rounded-full px-3.5 py-1.5 font-mono text-sm transition-colors",
+                  isActive ? "bg-secondary text-foreground" : "text-muted-foreground hover:text-foreground",
                 )
               }
             >
@@ -55,6 +62,7 @@ export function Navbar() {
         </div>
 
         <div className="hidden items-center gap-2 md:flex">
+          <ThemeToggle />
           {user ? (
             <>
               <Button variant="outline" size="sm" onClick={() => navigate(dashboardPath[user.role])}>
@@ -85,19 +93,22 @@ export function Navbar() {
           )}
         </div>
 
-        <button
-          type="button"
-          className="rounded-lg p-2 text-foreground md:hidden"
-          aria-label={open ? "Close menu" : "Open menu"}
-          aria-expanded={open}
-          onClick={() => setOpen(!open)}
-        >
-          {open ? <X className="size-5" /> : <Menu className="size-5" />}
-        </button>
+        <div className="flex items-center gap-1.5 md:hidden">
+          <ThemeToggle />
+          <button
+            type="button"
+            className="rounded-lg p-2 text-foreground"
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+            onClick={() => setOpen(!open)}
+          >
+            {open ? <X className="size-5" /> : <Menu className="size-5" />}
+          </button>
+        </div>
       </nav>
 
       {open && (
-        <div className="border-t border-border bg-card px-4 py-3 md:hidden">
+        <div className="mx-auto mt-2 max-w-6xl rounded-2xl border border-border bg-card px-4 py-3 shadow-lg md:hidden">
           <div className="flex flex-col gap-1">
             {links.map((l) => (
               <NavLink
@@ -106,8 +117,8 @@ export function Navbar() {
                 onClick={() => setOpen(false)}
                 className={({ isActive }) =>
                   clsx(
-                    "rounded-lg px-3 py-2 text-sm font-medium",
-                    isActive ? "bg-accent text-accent-foreground" : "text-muted-foreground",
+                    "rounded-lg px-3 py-2 font-mono text-sm",
+                    isActive ? "bg-secondary text-foreground" : "text-muted-foreground",
                   )
                 }
               >

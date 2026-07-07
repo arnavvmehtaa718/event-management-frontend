@@ -22,7 +22,7 @@ import { PageHeader } from "@/components/common/PageHeader"
 import { Card, Loader, EmptyState } from "@/components/common/ui"
 import useSWRImmutable from "swr/immutable"
 
-const CHART_COLORS = ["#4f46e5", "#22c55e", "#f59e0b", "#ef4444"]
+const CHART_COLORS = ["#f59e0b", "#22c55e", "#78716c", "#ef4444"]
 
 export default function OrganizerAnalytics() {
   const user = useAppSelector((s) => s.auth.user)!

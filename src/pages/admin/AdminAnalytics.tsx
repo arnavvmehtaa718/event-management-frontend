@@ -18,7 +18,7 @@ import * as adminApi from "@/api/adminApi"
 import { PageHeader } from "@/components/common/PageHeader"
 import { Card, Loader } from "@/components/common/ui"
 
-const CHART_COLORS = ["#4f46e5", "#22c55e", "#f59e0b", "#ef4444", "#0ea5e9", "#8b5cf6", "#64748b"]
+const CHART_COLORS = ["#f59e0b", "#22c55e", "#a8a29e", "#ef4444", "#fbbf24", "#78716c", "#57534e"]
 
 export default function AdminAnalytics() {
   const { data: allEvents } = useSWR("admin-events", () => adminApi.getAllEvents().then((r) => r.data))

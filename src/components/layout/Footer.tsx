@@ -3,14 +3,17 @@ import { CalendarRange } from "lucide-react"
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-card">
-      <div className="mx-auto flex max-w-7xl flex-col gap-8 px-4 py-12 md:flex-row md:items-start md:justify-between md:px-6">
+    <footer className="border-t border-border bg-card/40">
+      <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-12 md:flex-row md:items-start md:justify-between md:px-6">
         <div className="max-w-xs">
-          <Link to="/" className="flex items-center gap-2 font-bold text-foreground">
+          <Link to="/" className="flex items-center gap-2.5 font-extrabold tracking-tight text-foreground">
             <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
               <CalendarRange className="size-4" aria-hidden="true" />
             </span>
-            EventHub
+            <span>
+              event<span className="text-primary">Hub</span>
+              <span className="text-muted-foreground">.app</span>
+            </span>
           </Link>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
             One platform for discovering events, seamless registration, QR check-in, and automatic certificates.
@@ -36,8 +39,8 @@ export function Footer() {
         </div>
       </div>
       <div className="border-t border-border py-4">
-        <p className="mx-auto max-w-7xl px-4 text-xs text-muted-foreground md:px-6">
-          &copy; {new Date().getFullYear()} EventHub. All rights reserved.
+        <p className="mx-auto max-w-6xl px-4 font-mono text-xs text-muted-foreground md:px-6">
+          &copy; {new Date().getFullYear()} eventHub.app — all rights reserved
         </p>
       </div>
     </footer>

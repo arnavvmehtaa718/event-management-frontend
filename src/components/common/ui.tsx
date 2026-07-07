@@ -34,7 +34,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       ref={ref}
       disabled={disabled || loading}
       className={clsx(
-        "inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50",
+        "inline-flex items-center justify-center gap-2 rounded-full font-bold tracking-tight transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50",
         buttonVariants[variant],
         buttonSizes[size],
         className,
@@ -146,7 +146,7 @@ const badgeVariants: Record<BadgeVariant, string> = {
 
 export function Badge({ variant = "default", className, children }: { variant?: BadgeVariant; className?: string; children: ReactNode }) {
   return (
-    <span className={clsx("inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold", badgeVariants[variant], className)}>
+    <span className={clsx("inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 font-mono text-xs font-medium", badgeVariants[variant], className)}>
       {children}
     </span>
   )
@@ -155,7 +155,23 @@ export function Badge({ variant = "default", className, children }: { variant?: 
 /* ----------------------------- Card ----------------------------- */
 
 export function Card({ className, children }: { className?: string; children: ReactNode }) {
-  return <div className={clsx("rounded-xl border border-border bg-card", className)}>{children}</div>
+  return <div className={clsx("rounded-2xl border border-border bg-card", className)}>{children}</div>
+}
+
+/* ------------------------- Mono eyebrow pill ------------------------- */
+
+export function Eyebrow({ children, className }: { children: ReactNode; className?: string }) {
+  return (
+    <span
+      className={clsx(
+        "inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 font-mono text-xs text-muted-foreground",
+        className,
+      )}
+    >
+      <span className="size-1.5 rounded-full bg-primary" aria-hidden="true" />
+      {children}
+    </span>
+  )
 }
 
 /* ----------------------------- Loader ----------------------------- */

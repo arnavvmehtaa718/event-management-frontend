@@ -11,7 +11,7 @@ export function EventCard({ event }: { event: EventItem }) {
   const isPast = new Date(event.endDate).getTime() < Date.now()
 
   return (
-    <Card className="group flex flex-col overflow-hidden transition-shadow hover:shadow-lg">
+    <Card className="group flex flex-col overflow-hidden transition-all hover:border-primary/40 hover:shadow-lg hover:shadow-black/5">
       <Link to={`/events/${event.id}`} className="flex h-full flex-col">
         <div className="relative aspect-video overflow-hidden">
           <img
@@ -20,22 +20,22 @@ export function EventCard({ event }: { event: EventItem }) {
             className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
           <div className="absolute left-3 top-3 flex gap-2">
-            <Badge variant="accent">{event.category}</Badge>
-            <Badge variant="default">{modeLabel[event.mode]}</Badge>
+            <Badge className="border border-border bg-card/90 text-foreground backdrop-blur">{event.category.toLowerCase()}</Badge>
+            <Badge className="border border-border bg-card/90 text-muted-foreground backdrop-blur">{modeLabel[event.mode].toLowerCase()}</Badge>
           </div>
           {event.price === 0 ? (
             <Badge variant="success" className="absolute right-3 top-3 bg-success text-success-foreground">
-              Free
+              free
             </Badge>
           ) : (
-            <Badge className="absolute right-3 top-3 bg-card text-foreground">
+            <Badge className="absolute right-3 top-3 border border-border bg-card/90 text-foreground backdrop-blur">
               {"₹"}{event.price}
             </Badge>
           )}
         </div>
         <div className="flex flex-1 flex-col gap-3 p-4">
           <div>
-            <h3 className="font-bold leading-snug text-foreground text-balance">{event.title}</h3>
+            <h3 className="font-extrabold leading-snug tracking-tight text-foreground text-balance">{event.title}</h3>
             <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
               {event.organizerName}
               {event.organizerVerified && (
@@ -46,13 +46,13 @@ export function EventCard({ event }: { event: EventItem }) {
           <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">
             {event.description}
           </p>
-          <div className="mt-auto flex flex-col gap-1.5 text-xs text-muted-foreground">
+          <div className="mt-auto flex flex-col gap-1.5 font-mono text-xs text-muted-foreground">
             <span className="flex items-center gap-1.5">
-              <CalendarDays className="size-3.5" aria-hidden="true" />
+              <CalendarDays className="size-3.5 text-primary" aria-hidden="true" />
               {dayjs(event.startDate).format("ddd, MMM D, YYYY · h:mm A")}
             </span>
             <span className="flex items-center gap-1.5">
-              <MapPin className="size-3.5" aria-hidden="true" />
+              <MapPin className="size-3.5 text-primary" aria-hidden="true" />
               {event.venue}, {event.city}
             </span>
           </div>
