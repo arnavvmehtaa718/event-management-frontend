@@ -30,6 +30,23 @@ function dashboardPathFor(role: string) {
   return "/dashboard"
 }
 
+const rolePrefix: Record<string, string> = {
+  USER: "/user",
+  ORGANIZER: "/organizer",
+  ADMIN: "/admin",
+}
+
+function safeRedirect(from: string | undefined, role: string) {
+  if (!from) return dashboardPathFor(role)
+  const dashboardPrefixes = Object.values(rolePrefix)
+  const isDashboardPath = dashboardPrefixes.some((p) => from.startsWith(p))
+  // Only honor dashboard deep-links that belong to this user's role
+  if (isDashboardPath && !from.startsWith(rolePrefix[role] ?? "")) {
+    return dashboardPathFor(role)
+  }
+  return from
+}
+
 export default function LoginPage() {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
@@ -50,7 +67,7 @@ export default function LoginPage() {
   useEffect(() => {
     if (user) {
       const from = (location.state as { from?: string } | null)?.from
-      navigate(from ?? dashboardPathFor(user.role), { replace: true })
+      navigate(safeRedirect(from, user.role), { replace: true })
     }
   }, [user, navigate, location.state])
 

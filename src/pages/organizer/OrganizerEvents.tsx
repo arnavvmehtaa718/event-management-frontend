@@ -38,17 +38,26 @@ export default function OrganizerEvents() {
   const filtered = filter === "All" ? myEvents : myEvents.filter((e) => e.status === filter)
 
   const setStatus = async (event: EventItem, status: EventStatus) => {
-    const res = await eventApi.setEventStatus(event.id, status)
-    dispatch(pushToast({ type: res.success ? "success" : "error", message: res.message }))
-    mutate()
+    try {
+      const res = await eventApi.setEventStatus(event.id, status)
+      dispatch(pushToast({ type: "success", message: res.message }))
+      mutate()
+    } catch (e) {
+      dispatch(pushToast({ type: "error", message: (e as Error).message }))
+    }
   }
 
   const confirmDelete = async () => {
     if (!deleting) return
-    const res = await eventApi.deleteEvent(deleting.id)
-    dispatch(pushToast({ type: res.success ? "success" : "error", message: res.message }))
-    setDeleting(null)
-    mutate()
+    try {
+      const res = await eventApi.deleteEvent(deleting.id)
+      dispatch(pushToast({ type: "success", message: res.message }))
+      mutate()
+    } catch (e) {
+      dispatch(pushToast({ type: "error", message: (e as Error).message }))
+    } finally {
+      setDeleting(null)
+    }
   }
 
   return (

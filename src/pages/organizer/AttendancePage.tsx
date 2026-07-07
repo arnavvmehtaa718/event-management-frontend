@@ -44,16 +44,18 @@ export default function AttendancePage() {
   const checkIn = async () => {
     if (!code.trim()) return
     setChecking(true)
-    const res = await attendanceApi.verifyAttendance(code)
-    setChecking(false)
-    if (res.success) {
+    try {
+      const res = await attendanceApi.verifyAttendance(code)
       setLastResult({ ok: true, message: res.message, name: res.data.attendeeName })
       dispatch(pushToast({ type: "success", message: `${res.data.attendeeName} checked in` }))
       setCode("")
       mutate()
-    } else {
-      setLastResult({ ok: false, message: res.message })
-      dispatch(pushToast({ type: "error", message: res.message }))
+    } catch (e) {
+      const message = (e as Error).message
+      setLastResult({ ok: false, message })
+      dispatch(pushToast({ type: "error", message }))
+    } finally {
+      setChecking(false)
     }
   }
 

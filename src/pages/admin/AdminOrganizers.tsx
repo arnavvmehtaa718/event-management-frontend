@@ -24,15 +24,23 @@ export default function AdminOrganizers() {
   }, {})
 
   const verify = async (id: string) => {
-    const res = await adminApi.verifyOrganizer(id)
-    dispatch(pushToast({ type: res.success ? "success" : "error", message: res.message }))
-    mutate()
+    try {
+      const res = await adminApi.verifyOrganizer(id)
+      dispatch(pushToast({ type: "success", message: res.message }))
+      mutate()
+    } catch (e) {
+      dispatch(pushToast({ type: "error", message: (e as Error).message }))
+    }
   }
 
   const toggleBlock = async (id: string) => {
-    const res = await adminApi.toggleBlockUser(id)
-    dispatch(pushToast({ type: res.success ? "success" : "error", message: res.message }))
-    mutate()
+    try {
+      const res = await adminApi.toggleBlockUser(id)
+      dispatch(pushToast({ type: "success", message: res.message }))
+      mutate()
+    } catch (e) {
+      dispatch(pushToast({ type: "error", message: (e as Error).message }))
+    }
   }
 
   return (

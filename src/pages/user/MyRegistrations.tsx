@@ -52,26 +52,35 @@ export default function MyRegistrations() {
   })
 
   const cancel = async (reg: Registration) => {
-    const res = await registrationApi.cancelRegistration(reg.eventId, user.id)
-    dispatch(pushToast({ type: res.success ? "success" : "error", message: res.message }))
-    mutate()
+    try {
+      const res = await registrationApi.cancelRegistration(reg.eventId, user.id)
+      dispatch(pushToast({ type: "success", message: res.message }))
+      mutate()
+    } catch (e) {
+      dispatch(pushToast({ type: "error", message: (e as Error).message }))
+    }
   }
 
   const submitReview = async () => {
     if (!feedbackFor) return
     setSubmitting(true)
-    const res = await feedbackApi.submitFeedback({
-      eventId: feedbackFor.event.id,
-      userId: user.id,
-      userName: user.name,
-      rating,
-      review,
-    })
-    setSubmitting(false)
-    dispatch(pushToast({ type: "success", message: res.message }))
-    setFeedbackFor(null)
-    setReview("")
-    setRating(5)
+    try {
+      const res = await feedbackApi.submitFeedback({
+        eventId: feedbackFor.event.id,
+        userId: user.id,
+        userName: user.name,
+        rating,
+        review,
+      })
+      dispatch(pushToast({ type: "success", message: res.message }))
+      setFeedbackFor(null)
+      setReview("")
+      setRating(5)
+    } catch (e) {
+      dispatch(pushToast({ type: "error", message: (e as Error).message }))
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   const tabs: { key: Tab; label: string }[] = [

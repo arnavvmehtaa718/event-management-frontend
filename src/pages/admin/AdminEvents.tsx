@@ -36,9 +36,13 @@ export default function AdminEvents() {
   )
 
   const cancelEvent = async (id: string) => {
-    const res = await eventApi.setEventStatus(id, "CANCELLED")
-    dispatch(pushToast({ type: res.success ? "success" : "error", message: res.message }))
-    mutate()
+    try {
+      const res = await eventApi.setEventStatus(id, "CANCELLED")
+      dispatch(pushToast({ type: "success", message: res.message }))
+      mutate()
+    } catch (e) {
+      dispatch(pushToast({ type: "error", message: (e as Error).message }))
+    }
   }
 
   return (

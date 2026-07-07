@@ -71,7 +71,7 @@ export default function UserDashboard() {
             {upcomingRegistered.map((event) => (
               <div key={event.id} className="relative">
                 <EventCard event={event} />
-                <Badge variant="success" className="absolute right-3 top-3">
+                <Badge variant="success" className="absolute left-3 top-12">
                   Registered
                 </Badge>
               </div>

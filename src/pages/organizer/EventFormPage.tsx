@@ -114,11 +114,15 @@ export default function EventFormPage() {
         .map((t) => t.trim().toLowerCase())
         .filter(Boolean),
     }
-    const res = isEdit
-      ? await eventApi.updateEvent(id!, payload)
-      : await eventApi.createEvent(user.id, user.organization ?? user.name, payload)
-    dispatch(pushToast({ type: res.success ? "success" : "error", message: res.message }))
-    if (res.success) navigate("/organizer/events")
+    try {
+      const res = isEdit
+        ? await eventApi.updateEvent(id!, payload)
+        : await eventApi.createEvent(user.id, user.organization ?? user.name, payload)
+      dispatch(pushToast({ type: "success", message: res.message }))
+      navigate("/organizer/events")
+    } catch (e) {
+      dispatch(pushToast({ type: "error", message: (e as Error).message }))
+    }
   }
 
   if (isEdit && isLoading) return <Loader />
