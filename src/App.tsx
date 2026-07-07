@@ -19,6 +19,8 @@ import { Toaster } from "@/components/common/Toaster"
 import LandingPage from "@/pages/public/LandingPage"
 import EventsPage from "@/pages/public/EventsPage"
 import EventDetailPage from "@/pages/public/EventDetailPage"
+import AboutPage from "@/pages/public/AboutPage"
+import ContactPage from "@/pages/public/ContactPage"
 import NotFoundPage from "@/pages/public/NotFoundPage"
 import ForbiddenPage from "@/pages/public/ForbiddenPage"
 import LoginPage from "@/pages/auth/LoginPage"
@@ -80,6 +82,8 @@ export default function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/events" element={<EventsPage />} />
           <Route path="/events/:id" element={<EventDetailPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/contact" element={<ContactPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
         <Route path="/login" element={<LoginPage />} />
