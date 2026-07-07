@@ -3,7 +3,7 @@
 import { useState } from "react"
 import useSWR from "swr"
 import dayjs from "dayjs"
-import { QrCode, UserCheck, CheckCircle2, XCircle } from "lucide-react"
+import { QrCode, UserCheck, CheckCircle2, XCircle, Camera, Keyboard } from "lucide-react"
 import { useAppDispatch, useAppSelector } from "@/app/store"
 import * as eventApi from "@/api/eventApi"
 import * as attendanceApi from "@/api/attendanceApi"
@@ -11,6 +11,8 @@ import * as adminApi from "@/api/adminApi"
 import { pushToast } from "@/features/toast/toastSlice"
 import { PageHeader } from "@/components/common/PageHeader"
 import { Card, Button, Input, Select, Badge, Loader, EmptyState } from "@/components/common/ui"
+import { QrScanner } from "@/components/organizer/QrScanner"
+import clsx from "clsx"
 import type { AttendanceStatus } from "@/constants/types"
 
 const attendanceBadge: Record<AttendanceStatus, { label: string; variant: "success" | "warning" | "destructive" | "outline" }> = {
@@ -27,6 +29,7 @@ export default function AttendancePage() {
   const [code, setCode] = useState("")
   const [lastResult, setLastResult] = useState<{ ok: boolean; message: string; name?: string } | null>(null)
   const [checking, setChecking] = useState(false)
+  const [mode, setMode] = useState<"scan" | "manual">("scan")
 
   const { data: myEvents } = useSWR(["organizer-events", user.id], () =>
     eventApi.getOrganizerEvents(user.id).then((r) => r.data),
@@ -41,11 +44,11 @@ export default function AttendancePage() {
 
   const usersById = new Map(allUsers.map((u) => [u.id, u]))
 
-  const checkIn = async () => {
-    if (!code.trim()) return
+  const verify = async (value: string) => {
+    if (!value.trim() || checking) return
     setChecking(true)
     try {
-      const res = await attendanceApi.verifyAttendance(code)
+      const res = await attendanceApi.verifyAttendance(value)
       setLastResult({ ok: true, message: res.message, name: res.data.attendeeName })
       dispatch(pushToast({ type: "success", message: `${res.data.attendeeName} checked in` }))
       setCode("")
@@ -58,6 +61,8 @@ export default function AttendancePage() {
       setChecking(false)
     }
   }
+
+  const checkIn = () => verify(code)
 
   const confirmed = (attendance ?? []).filter((r) => r.status === "CONFIRMED")
   const present = confirmed.filter((r) => r.attendance === "PRESENT" || r.attendance === "LATE").length
@@ -75,21 +80,61 @@ export default function AttendancePage() {
             <QrCode className="size-5 text-primary" aria-hidden="true" />
             Check-in scanner
           </h2>
+
+          <div role="tablist" aria-label="Check-in method" className="mb-4 grid grid-cols-2 gap-1 rounded-full border border-border bg-muted p-1">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={mode === "scan"}
+              onClick={() => setMode("scan")}
+              className={clsx(
+                "flex items-center justify-center gap-1.5 rounded-full px-3 py-1.5 font-mono text-xs transition-colors",
+                mode === "scan"
+                  ? "bg-primary font-bold text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              <Camera className="size-3.5" aria-hidden="true" />
+              scan QR
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={mode === "manual"}
+              onClick={() => setMode("manual")}
+              className={clsx(
+                "flex items-center justify-center gap-1.5 rounded-full px-3 py-1.5 font-mono text-xs transition-colors",
+                mode === "manual"
+                  ? "bg-primary font-bold text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              <Keyboard className="size-3.5" aria-hidden="true" />
+              manual entry
+            </button>
+          </div>
+
           <div className="flex flex-col gap-4">
-            <Input
-              id="qr-code"
-              label="QR value or ticket number"
-              placeholder="e.g. EVT-2026-123456"
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.nativeEvent.isComposing && e.keyCode !== 229) checkIn()
-              }}
-            />
-            <Button onClick={checkIn} loading={checking}>
-              <UserCheck className="size-4" aria-hidden="true" />
-              Check in attendee
-            </Button>
+            {mode === "scan" ? (
+              <QrScanner onScan={verify} paused={checking} />
+            ) : (
+              <>
+                <Input
+                  id="qr-code"
+                  label="QR value or ticket number"
+                  placeholder="e.g. EVT-2026-123456"
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.nativeEvent.isComposing && e.keyCode !== 229) checkIn()
+                  }}
+                />
+                <Button onClick={checkIn} loading={checking}>
+                  <UserCheck className="size-4" aria-hidden="true" />
+                  Check in attendee
+                </Button>
+              </>
+            )}
             {lastResult && (
               <div
                 role="status"
@@ -111,8 +156,9 @@ export default function AttendancePage() {
               </div>
             )}
             <p className="text-xs text-muted-foreground text-pretty">
-              Tip: in this demo, paste a ticket number from the attendee list on the right, or from a user&apos;s
-              &quot;My Registrations&quot; ticket.
+              {mode === "scan"
+                ? "Point the camera at the QR on an attendee's ticket (found in their \"My Registrations\" page). Verified tickets are checked in automatically."
+                : "Tip: in this demo, paste a ticket number from the attendee list on the right, or from a user's \"My Registrations\" ticket."}
             </p>
           </div>
         </Card>
