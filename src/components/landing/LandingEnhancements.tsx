@@ -68,7 +68,6 @@ const faqs = [
   ["How does QR check-in work?", "Every registration receives a unique QR ticket. Organizers scan it from the attendance page to verify the ticket and mark the attendee present."],
   ["When are certificates issued?", "For eligible events, certificates are issued automatically after a successful attendance check-in and remain available in the attendee dashboard."],
   ["Does EventHub support online events?", "Yes. Organizers can publish online, offline, and hybrid events, while attendees can filter by the format they prefer."],
-  ["Are the AI and networking tools available now?", "These capabilities are product previews in this frontend experience and are presented transparently without pretending to be connected backend features."],
 ]
 
 const reveal = { hidden: { opacity: 0, y: 18 }, visible: { opacity: 1, y: 0 } }
