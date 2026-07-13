@@ -16,6 +16,7 @@ import { getUpcomingEvents, getPopularEvents } from "@/api/eventApi"
 import type { EventItem } from "@/constants/types"
 import { EventCard } from "@/components/cards/EventCard"
 import { Button, Skeleton, Eyebrow } from "@/components/common/ui"
+import { LandingEnhancements } from "@/components/landing/LandingEnhancements"
 
 const features = [
   {
@@ -269,6 +270,8 @@ export default function LandingPage() {
           </ol>
         </div>
       </section>
+
+      <LandingEnhancements />
 
       {/* CTA */}
       <section className="border-t border-border">
