@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
+import { motion, useReducedMotion } from "framer-motion"
 import {
   ArrowRight,
   QrCode,
@@ -70,7 +71,17 @@ const steps = [
   { step: "04", title: "Get your certificate", text: "Certificates are issued automatically after attendance." },
 ]
 
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0 },
+}
+
+const stagger = {
+  visible: { transition: { staggerChildren: 0.08 } },
+}
+
 export default function LandingPage() {
+  const reduce = useReducedMotion()
   const [upcoming, setUpcoming] = useState<EventItem[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -86,16 +97,22 @@ export default function LandingPage() {
       <section className="relative overflow-hidden">
         <div className="bg-grid bg-grid-fade pointer-events-none absolute inset-0 opacity-60" aria-hidden="true" />
         <div className="relative mx-auto grid max-w-6xl gap-12 px-4 pb-20 pt-16 md:grid-cols-[1.1fr_0.9fr] md:items-center md:px-6 md:pb-28 md:pt-24">
-          <div>
-            <Eyebrow>events · tickets · certificates</Eyebrow>
-            <h1 className="display mt-6 text-5xl text-foreground md:text-7xl">
+          <motion.div
+            variants={stagger}
+            initial={reduce ? false : "hidden"}
+            animate="visible"
+          >
+            <motion.div variants={fadeUp} transition={{ duration: reduce ? 0 : 0.45 }}>
+              <Eyebrow>events · tickets · certificates</Eyebrow>
+            </motion.div>
+            <motion.h1 variants={fadeUp} transition={{ duration: reduce ? 0 : 0.5 }} className="display mt-6 text-5xl text-foreground md:text-7xl">
               Real events to <span className="text-primary">discover</span>, join, and <span className="italic">explore</span>.
-            </h1>
-            <p className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground text-pretty">
+            </motion.h1>
+            <motion.p variants={fadeUp} transition={{ duration: reduce ? 0 : 0.45 }} className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground text-pretty">
               EventHub is a hub for the full event lifecycle — discovery, registration, QR check-in, and automatic
               certificates — so communities stop juggling forms and spreadsheets.
-            </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            </motion.p>
+            <motion.div variants={fadeUp} transition={{ duration: reduce ? 0 : 0.45 }} className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link to="/events">
                 <Button size="lg" className="w-full sm:w-auto">
                   Explore events
@@ -107,8 +124,8 @@ export default function LandingPage() {
                   Host an event
                 </Button>
               </Link>
-            </div>
-            <dl className="mt-12 grid grid-cols-3 gap-6 border-t border-border pt-6">
+            </motion.div>
+            <motion.dl variants={fadeUp} transition={{ duration: reduce ? 0 : 0.45 }} className="mt-12 grid grid-cols-3 gap-6 border-t border-border pt-6">
               {[
                 ["4,200+", "events hosted"],
                 ["58k+", "registrations"],
@@ -120,11 +137,16 @@ export default function LandingPage() {
                   <dd className="mt-1 font-mono text-xs text-muted-foreground">{label}</dd>
                 </div>
               ))}
-            </dl>
-          </div>
+            </motion.dl>
+          </motion.div>
 
           {/* Attendee journey card */}
-          <div className="relative hidden md:block">
+          <motion.div
+            initial={reduce ? false : { opacity: 0, x: 30, rotate: 1 }}
+            animate={{ opacity: 1, x: 0, rotate: 0 }}
+            transition={{ delay: reduce ? 0 : 0.2, duration: reduce ? 0 : 0.55, ease: "easeOut" }}
+            className="relative hidden md:block"
+          >
             <div className="rounded-2xl border border-border bg-card p-6 shadow-2xl shadow-black/10">
               <div className="flex items-center justify-between">
                 <span className="font-mono text-xs text-muted-foreground">your event journey</span>
@@ -169,21 +191,38 @@ export default function LandingPage() {
                 </p>
               </div>
             </div>
-            <img
+            <motion.img
               src="/events/tech-conf.png"
               alt=""
               aria-hidden="true"
+              animate={reduce ? undefined : { y: [0, -7, 0] }}
+              transition={reduce ? undefined : { duration: 5, repeat: Infinity, ease: "easeInOut" }}
               className="absolute -bottom-8 -left-10 -z-10 w-64 rotate-[-4deg] rounded-2xl border border-border object-cover opacity-70"
             />
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Upcoming events */}
       <section className="border-t border-border">
         <div className="mx-auto max-w-6xl px-4 py-20 md:px-6">
-          <Eyebrow>happening soon</Eyebrow>
-          <div className="mt-5 mb-10 flex flex-wrap items-end justify-between gap-4">
+          <motion.div
+            variants={fadeUp}
+            initial={reduce ? false : "hidden"}
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.35 }}
+            transition={{ duration: reduce ? 0 : 0.45 }}
+          >
+            <Eyebrow>happening soon</Eyebrow>
+          </motion.div>
+          <motion.div
+            variants={fadeUp}
+            initial={reduce ? false : "hidden"}
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.35 }}
+            transition={{ duration: reduce ? 0 : 0.45, delay: reduce ? 0 : 0.06 }}
+            className="mt-5 mb-10 flex flex-wrap items-end justify-between gap-4"
+          >
             <h2 className="display text-3xl text-foreground md:text-5xl">
               Filling <span className="text-primary">fast.</span> Grab a seat.
             </h2>
@@ -194,19 +233,35 @@ export default function LandingPage() {
               view all events
               <ArrowRight className="size-4" aria-hidden="true" />
             </Link>
-          </div>
+          </motion.div>
           {loading ? (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <motion.div
+              variants={stagger}
+              initial={reduce ? false : "hidden"}
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.15 }}
+              className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+            >
               {[0, 1, 2].map((i) => (
-                <Skeleton key={i} className="h-96" />
+                <motion.div key={i} variants={fadeUp}>
+                  <Skeleton className="h-96" />
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <motion.div
+              variants={stagger}
+              initial={reduce ? false : "hidden"}
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.15 }}
+              className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+            >
               {upcoming.map((e) => (
-                <EventCard key={e.id} event={e} />
+                <motion.div key={e.id} variants={fadeUp} whileHover={reduce ? undefined : { y: -6 }}>
+                  <EventCard event={e} />
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           )}
         </div>
       </section>
@@ -214,18 +269,35 @@ export default function LandingPage() {
       {/* Features */}
       <section className="border-t border-border bg-card/40">
         <div className="mx-auto max-w-6xl px-4 py-20 md:px-6">
-          <Eyebrow>everything you need</Eyebrow>
-          <h2 className="display mt-5 text-3xl text-foreground md:text-5xl">
+          <motion.div
+            variants={fadeUp}
+            initial={reduce ? false : "hidden"}
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: reduce ? 0 : 0.45 }}
+          >
+            <Eyebrow>everything you need</Eyebrow>
+            <h2 className="display mt-5 text-3xl text-foreground md:text-5xl">
             Six lanes. <span className="text-primary">One platform.</span>
           </h2>
-          <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">
-            Each piece mirrors how real events actually run — so the whole lifecycle lives in one place, from the first
-            search to the final certificate.
-          </p>
-          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">
+              Each piece mirrors how real events actually run — so the whole lifecycle lives in one place, from the first
+              search to the final certificate.
+            </p>
+          </motion.div>
+          <motion.div
+            variants={stagger}
+            initial={reduce ? false : "hidden"}
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.12 }}
+            className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+          >
             {features.map((f) => (
-              <div
+              <motion.div
                 key={f.title}
+                variants={fadeUp}
+                whileHover={reduce ? undefined : { y: -6 }}
+                transition={{ duration: reduce ? 0 : 0.3 }}
                 className="group rounded-2xl border border-border bg-card p-6 transition-colors hover:border-primary/40"
               >
                 <div className="flex items-start justify-between">
@@ -246,28 +318,47 @@ export default function LandingPage() {
                     </p>
                   ))}
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* How it works */}
       <section className="border-t border-border">
         <div className="mx-auto max-w-6xl px-4 py-20 md:px-6">
-          <Eyebrow>how it works</Eyebrow>
-          <h2 className="display mt-5 max-w-2xl text-3xl text-foreground md:text-5xl">
-            From <span className="text-primary">sign-up</span> to certificate — four steps.
-          </h2>
-          <ol className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <motion.div
+            variants={fadeUp}
+            initial={reduce ? false : "hidden"}
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: reduce ? 0 : 0.45 }}
+          >
+            <Eyebrow>how it works</Eyebrow>
+            <h2 className="display mt-5 max-w-2xl text-3xl text-foreground md:text-5xl">
+              From <span className="text-primary">sign-up</span> to certificate — four steps.
+            </h2>
+          </motion.div>
+          <motion.ol
+            variants={stagger}
+            initial={reduce ? false : "hidden"}
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.15 }}
+            className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
+          >
             {steps.map((s) => (
-              <li key={s.step} className="rounded-2xl border border-border bg-card p-6">
+              <motion.li
+                key={s.step}
+                variants={fadeUp}
+                whileHover={reduce ? undefined : { y: -5 }}
+                className="rounded-2xl border border-border bg-card p-6"
+              >
                 <span className="font-mono text-sm text-primary">{s.step}</span>
                 <h3 className="mt-3 font-extrabold tracking-tight text-foreground">{s.title}</h3>
                 <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{s.text}</p>
-              </li>
+              </motion.li>
             ))}
-          </ol>
+          </motion.ol>
         </div>
       </section>
 
@@ -277,21 +368,31 @@ export default function LandingPage() {
       <section className="border-t border-border">
         <div className="relative mx-auto max-w-6xl overflow-hidden px-4 py-24 md:px-6">
           <div className="bg-grid pointer-events-none absolute inset-0 opacity-40" aria-hidden="true" />
-          <div className="relative flex flex-col items-center gap-6 text-center">
-            <Eyebrow>no forms · no spreadsheets · just events</Eyebrow>
-            <h2 className="display max-w-3xl text-4xl text-foreground md:text-6xl text-balance">
+          <motion.div
+            variants={stagger}
+            initial={reduce ? false : "hidden"}
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            className="relative flex flex-col items-center gap-6 text-center"
+          >
+            <motion.div variants={fadeUp}>
+              <Eyebrow>no forms · no spreadsheets · just events</Eyebrow>
+            </motion.div>
+            <motion.h2 variants={fadeUp} className="display max-w-3xl text-4xl text-foreground md:text-6xl text-balance">
               Ready to bring your community <span className="text-primary">together?</span>
-            </h2>
-            <p className="max-w-md text-sm leading-relaxed text-muted-foreground text-pretty">
+            </motion.h2>
+            <motion.p variants={fadeUp} className="max-w-md text-sm leading-relaxed text-muted-foreground text-pretty">
               Create your organization account, publish your first event, and start scanning attendees in minutes.
-            </p>
-            <Link to="/register">
-              <Button size="lg">
-                Get started free
-                <ArrowRight className="size-4" aria-hidden="true" />
-              </Button>
-            </Link>
-          </div>
+            </motion.p>
+            <motion.div variants={fadeUp} whileHover={reduce ? undefined : { scale: 1.03 }} whileTap={reduce ? undefined : { scale: 0.98 }}>
+              <Link to="/register">
+                <Button size="lg">
+                  Get started free
+                  <ArrowRight className="size-4" aria-hidden="true" />
+                </Button>
+              </Link>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
     </div>
