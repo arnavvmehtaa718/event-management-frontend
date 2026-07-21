@@ -12,6 +12,7 @@ import * as eventApi from "@/api/eventApi"
 import { pushToast } from "@/features/toast/toastSlice"
 import { PageHeader } from "@/components/common/PageHeader"
 import { Card, Button, Input, Textarea, Select, Loader } from "@/components/common/ui"
+import { FallbackImage } from "@/components/common/FallbackImage"
 
 const banners = [
   { value: "/events/tech-conf.png", label: "Tech conference" },
@@ -183,8 +184,8 @@ export default function EventFormPage() {
               {banners.map((b) => (
                 <label key={b.value} className="cursor-pointer">
                   <input type="radio" value={b.value} className="peer sr-only" {...register("banner")} />
-                  <img
-                    src={b.value || "/placeholder.svg"}
+                  <FallbackImage
+                    src={b.value}
                     alt={b.label}
                     className={
                       banner === b.value

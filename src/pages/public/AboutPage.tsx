@@ -9,6 +9,7 @@ const values = [
     title: "Discovery first",
     description:
       "Events shouldn't live in scattered group chats and posters. EventHub puts every event — tech, cultural, sports, business — in one searchable place.",
+
   },
   {
     icon: CalendarCheck,

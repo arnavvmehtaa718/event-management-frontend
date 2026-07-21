@@ -1,12 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Link, NavLink, useNavigate } from "react-router-dom"
-import { CalendarRange, Menu, X, LayoutDashboard, LogOut } from "lucide-react"
+import { Menu, X, LayoutDashboard, LogOut } from "lucide-react"
 import { useAppDispatch, useAppSelector } from "@/app/store"
 import { logout } from "@/features/auth/authSlice"
 import { Button } from "@/components/common/ui"
 import { ThemeToggle } from "@/components/common/ThemeToggle"
+import { Logo } from "@/components/common/Logo"
 import clsx from "clsx"
 
 const dashboardPath: Record<string, string> = {
@@ -17,9 +18,16 @@ const dashboardPath: Record<string, string> = {
 
 export function Navbar() {
   const [open, setOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const user = useAppSelector((s) => s.auth.user)
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20)
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [])
 
   const links = [
     { to: "/", label: "home" },
@@ -31,15 +39,18 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-40 px-3 pt-3 md:px-6">
       <nav
-        className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 rounded-2xl border border-border bg-card/85 px-3 shadow-lg shadow-black/5 backdrop-blur-md md:px-4"
+        className={clsx(
+          "mx-auto flex h-14 max-w-7xl items-center justify-between gap-4 rounded-2xl border px-3 shadow-lg shadow-black/5 backdrop-blur-xl backdrop-saturate-150 transition-all duration-300 md:px-4",
+          scrolled
+            ? "border-border/60 bg-card/80"
+            : "border-transparent bg-transparent"
+        )}
         aria-label="Main navigation"
       >
         <Link to="/" className="flex items-center gap-2.5 font-extrabold tracking-tight text-foreground">
-          <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <CalendarRange className="size-4" aria-hidden="true" />
-          </span>
+          <Logo className="h-8 w-8" />
           <span>
-            Event<span className="text-primary">Hub</span>
+            event<span className="text-primary">h</span>ub
           </span>
         </Link>
 
@@ -107,7 +118,7 @@ export function Navbar() {
       </nav>
 
       {open && (
-        <div className="mx-auto mt-2 max-w-6xl rounded-2xl border border-border bg-card px-4 py-3 shadow-lg md:hidden">
+        <div className="mx-auto mt-2 max-w-7xl rounded-2xl border border-border bg-card/95 px-4 py-3 shadow-lg backdrop-blur-xl md:hidden">
           <div className="flex flex-col gap-1">
             {links.map((l) => (
               <NavLink

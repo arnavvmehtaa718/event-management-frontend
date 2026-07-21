@@ -23,6 +23,7 @@ import { useAppDispatch, useAppSelector } from "@/app/store"
 import { pushToast } from "@/features/toast/toastSlice"
 import { Badge, Button, Card, Loader, Textarea, EmptyState } from "@/components/common/ui"
 import { Modal } from "@/components/common/Modal"
+import { FallbackImage } from "@/components/common/FallbackImage"
 
 const modeLabel = { IN_PERSON: "In person", ONLINE: "Online", HYBRID: "Hybrid" }
 
@@ -144,7 +145,7 @@ export default function EventDetailPage() {
         {/* Main content */}
         <div className="lg:col-span-2">
           <div className="overflow-hidden rounded-2xl">
-            <img src={event.banner || "/placeholder.svg"} alt={event.title} className="aspect-video w-full object-cover" />
+            <FallbackImage src={event.banner} alt={event.title} className="aspect-video w-full object-cover" />
           </div>
 
           <div className="mt-6 flex flex-wrap items-center gap-2">

@@ -14,6 +14,7 @@ import { pushToast } from "@/features/toast/toastSlice"
 import { PageHeader } from "@/components/common/PageHeader"
 import { Modal } from "@/components/common/Modal"
 import { Card, Badge, Button, Loader, EmptyState, Textarea } from "@/components/common/ui"
+import { FallbackImage } from "@/components/common/FallbackImage"
 import type { EventItem, Registration } from "@/constants/types"
 import clsx from "clsx"
 
@@ -125,8 +126,8 @@ export default function MyRegistrations() {
         <div className="flex flex-col gap-4">
           {filtered.map(({ reg, event }) => (
             <Card key={reg.id} className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center">
-              <img
-                src={event.banner || "/placeholder.svg"}
+              <FallbackImage
+                src={event.banner}
                 alt=""
                 className="h-24 w-full rounded-lg object-cover sm:w-40"
               />

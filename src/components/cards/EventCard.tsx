@@ -3,6 +3,7 @@ import { CalendarDays, MapPin, Users, Star, BadgeCheck } from "lucide-react"
 import dayjs from "dayjs"
 import type { EventItem } from "@/constants/types"
 import { Badge, Card } from "@/components/common/ui"
+import { FallbackImage } from "@/components/common/FallbackImage"
 
 const modeLabel = { IN_PERSON: "In person", ONLINE: "Online", HYBRID: "Hybrid" }
 
@@ -14,8 +15,8 @@ export function EventCard({ event }: { event: EventItem }) {
     <Card className="group flex flex-col overflow-hidden transition-all hover:border-primary/40 hover:shadow-lg hover:shadow-black/5">
       <Link to={`/events/${event.id}`} className="flex h-full flex-col">
         <div className="relative aspect-video overflow-hidden">
-          <img
-            src={event.banner || "/placeholder.svg"}
+          <FallbackImage
+            src={event.banner}
             alt={event.title}
             className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
           />

@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react"
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom"
 import {
-  CalendarRange,
   Menu,
   X,
   Bell,
@@ -14,6 +13,7 @@ import { useAppDispatch, useAppSelector } from "@/app/store"
 import { logout } from "@/features/auth/authSlice"
 import { fetchNotifications } from "@/features/notifications/notificationSlice"
 import { ThemeToggle } from "@/components/common/ThemeToggle"
+import { Logo } from "@/components/common/Logo"
 import clsx from "clsx"
 
 export interface NavItem {
@@ -52,11 +52,9 @@ export default function DashboardLayout({
     <div className="flex h-full flex-col">
       <div className="flex h-16 items-center gap-2 px-5">
         <Link to="/" className="flex items-center gap-2.5 font-extrabold tracking-tight text-white">
-          <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <CalendarRange className="size-4" aria-hidden="true" />
-          </span>
+          <Logo className="h-8 w-8" />
           <span>
-            Event<span className="text-primary">Hub</span>
+            event<span className="text-primary">h</span>ub
           </span>
         </Link>
       </div>

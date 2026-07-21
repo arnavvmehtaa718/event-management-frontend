@@ -5,11 +5,11 @@ import { Link, useLocation, useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { CalendarDays } from "lucide-react"
 import { useAppDispatch, useAppSelector } from "@/app/store"
 import { login, clearError } from "@/features/auth/authSlice"
 import { pushToast } from "@/features/toast/toastSlice"
 import { Button, Input, Card } from "@/components/common/ui"
+import { Logo } from "@/components/common/Logo"
 
 const schema = z.object({
   email: z.string().email("Enter a valid email address"),
@@ -89,9 +89,9 @@ export default function LoginPage() {
       <div className="relative w-full max-w-md">
         <div className="mb-8 flex flex-col items-center gap-3">
           <Link to="/" className="flex items-center gap-2 text-primary">
-            <CalendarDays className="size-8" aria-hidden="true" />
+            <Logo className="h-8 w-8" />
             <span className="text-2xl font-extrabold tracking-tight text-foreground">
-              Event<span className="text-primary">Hub</span>
+              event<span className="text-primary">h</span>ub
             </span>
           </Link>
           <p className="font-mono text-xs text-muted-foreground">sign in to continue</p>
