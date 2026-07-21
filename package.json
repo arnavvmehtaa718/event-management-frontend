@@ -35,10 +35,5 @@
     "tailwindcss": "^4.3.2",
     "typescript": "5.7.3",
     "vite": "^8.1.5"
-  },
-  "pnpm": {
-    "overrides": {
-      "hono": "4.12.25"
-    }
   }
 }
