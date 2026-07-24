@@ -17,11 +17,10 @@ import dayjs from "dayjs"
 import { QRCodeSVG } from "qrcode.react"
 import { getEventById } from "@/api/eventApi"
 import { registerForEvent, getMyRegistrations } from "@/api/registrationApi"
-import { getEventFeedback, submitFeedback } from "@/api/feedbackApi"
-import type { EventItem, Feedback, Registration } from "@/constants/types"
+import type { EventItem, Registration } from "@/constants/types"
 import { useAppDispatch, useAppSelector } from "@/app/store"
 import { pushToast } from "@/features/toast/toastSlice"
-import { Badge, Button, Card, Loader, Textarea, EmptyState } from "@/components/common/ui"
+import { Badge, Button, Card, Loader, EmptyState } from "@/components/common/ui"
 import { Modal } from "@/components/common/Modal"
 import { FallbackImage } from "@/components/common/FallbackImage"
 
@@ -34,25 +33,17 @@ export default function EventDetailPage() {
   const user = useAppSelector((s) => s.auth.user)
 
   const [event, setEvent] = useState<EventItem | null>(null)
-  const [feedback, setFeedback] = useState<Feedback[]>([])
   const [myReg, setMyReg] = useState<Registration | null>(null)
   const [loading, setLoading] = useState(true)
   const [registering, setRegistering] = useState(false)
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [ticketOpen, setTicketOpen] = useState(false)
-  const [rating, setRating] = useState(5)
-  const [review, setReview] = useState("")
-  const [submittingFeedback, setSubmittingFeedback] = useState(false)
 
   const load = useCallback(async () => {
     if (!id) return
     try {
-      const [eventRes, feedbackRes] = await Promise.all([
-        getEventById(id),
-        getEventFeedback(id),
-      ])
+      const eventRes = await getEventById(id)
       setEvent(eventRes.data)
-      setFeedback(feedbackRes.data)
       if (user) {
         const regs = await getMyRegistrations(user.id)
         setMyReg(
@@ -87,8 +78,6 @@ export default function EventDetailPage() {
 
   const isPast = new Date(event.endDate).getTime() < Date.now()
   const isFull = event.registeredCount >= event.capacity
-  const attended = myReg?.attendance === "PRESENT" || myReg?.attendance === "LATE"
-  const alreadyReviewed = user ? feedback.some((f) => f.userId === user.id) : false
 
   const handleRegister = async () => {
     if (!user) {
@@ -107,27 +96,6 @@ export default function EventDetailPage() {
       dispatch(pushToast({ type: "error", message: (e as Error).message }))
     } finally {
       setRegistering(false)
-    }
-  }
-
-  const handleFeedback = async () => {
-    if (!user || !review.trim()) return
-    setSubmittingFeedback(true)
-    try {
-      const res = await submitFeedback({
-        eventId: event.id,
-        userId: user.id,
-        userName: user.name,
-        rating,
-        review: review.trim(),
-      })
-      setFeedback([res.data, ...feedback])
-      setReview("")
-      dispatch(pushToast({ type: "success", message: res.message }))
-    } catch (e) {
-      dispatch(pushToast({ type: "error", message: (e as Error).message }))
-    } finally {
-      setSubmittingFeedback(false)
     }
   }
 
@@ -188,83 +156,7 @@ export default function EventDetailPage() {
             ))}
           </div>
 
-          {/* Feedback section */}
-          <section className="mt-10 border-t border-border pt-8" aria-label="Reviews">
-            <h2 className="text-lg font-bold text-foreground">
-              Reviews {feedback.length > 0 && `(${feedback.length})`}
-            </h2>
 
-            {user && attended && !alreadyReviewed && (
-              <Card className="mt-4 p-5">
-                <p className="mb-3 text-sm font-semibold text-foreground">Leave your feedback</p>
-                <div className="mb-3 flex items-center gap-1" role="radiogroup" aria-label="Rating">
-                  {[1, 2, 3, 4, 5].map((r) => (
-                    <button
-                      key={r}
-                      type="button"
-                      role="radio"
-                      aria-checked={rating === r}
-                      aria-label={`${r} star${r > 1 ? "s" : ""}`}
-                      onClick={() => setRating(r)}
-                    >
-                      <Star
-                        className={
-                          r <= rating
-                            ? "size-6 fill-warning text-warning"
-                            : "size-6 text-border"
-                        }
-                      />
-                    </button>
-                  ))}
-                </div>
-                <Textarea
-                  id="review"
-                  value={review}
-                  onChange={(e) => setReview(e.target.value)}
-                  placeholder="How was the event?"
-                  aria-label="Review"
-                />
-                <Button
-                  className="mt-3"
-                  size="sm"
-                  loading={submittingFeedback}
-                  disabled={!review.trim()}
-                  onClick={handleFeedback}
-                >
-                  Submit review
-                </Button>
-              </Card>
-            )}
-
-            {feedback.length === 0 ? (
-              <p className="mt-4 text-sm text-muted-foreground">No reviews yet.</p>
-            ) : (
-              <ul className="mt-4 flex flex-col gap-4">
-                {feedback.map((f) => (
-                  <li key={f.id} className="rounded-xl border border-border bg-card p-5">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <span className="flex size-9 items-center justify-center rounded-full bg-accent text-sm font-bold text-accent-foreground">
-                          {f.userName.charAt(0)}
-                        </span>
-                        <div>
-                          <p className="text-sm font-semibold text-foreground">{f.userName}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {dayjs(f.createdAt).format("MMM D, YYYY")}
-                          </p>
-                        </div>
-                      </div>
-                      <span className="flex items-center gap-1 text-sm font-semibold text-foreground">
-                        <Star className="size-4 fill-warning text-warning" aria-hidden="true" />
-                        {f.rating}
-                      </span>
-                    </div>
-                    <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{f.review}</p>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
         </div>
 
         {/* Sidebar */}

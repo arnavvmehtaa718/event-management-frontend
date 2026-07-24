@@ -80,8 +80,8 @@ export default function App() {
         {/* Public */}
         <Route element={<PublicLayout />}>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/events" element={<EventsPage />} />
-          <Route path="/events/:id" element={<EventDetailPage />} />
+          <Route path="/events" element={<Navigate to="/login" replace />} />
+          <Route path="/events/:id" element={<Navigate to="/login" replace />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="*" element={<NotFoundPage />} />

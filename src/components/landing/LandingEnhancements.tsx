@@ -1,12 +1,11 @@
 "use client"
 
-import { useEffect, useRef, useState, type ReactNode } from "react"
+import { type ReactNode } from "react"
 import { Link } from "react-router-dom"
-import { motion, useInView, useReducedMotion } from "framer-motion"
+import { motion, useReducedMotion } from "framer-motion"
 import {
   ArrowRight,
   BarChart3,
-  BellRing,
   Bot,
   BriefcaseBusiness,
   CalendarCheck,
@@ -17,24 +16,12 @@ import {
   GraduationCap,
   Lightbulb,
   MessageCircle,
-  MessageSquareText,
   Music2,
-  QrCode,
-  Search,
-  Sparkles,
   Trophy,
   Users,
-  WandSparkles,
   Zap,
 } from "lucide-react"
 import { Button, Eyebrow } from "@/components/common/ui"
-
-const impact = [
-  { value: 4200, suffix: "+", label: "Events hosted" },
-  { value: 58000, suffix: "+", label: "Attendees" },
-  { value: 860, suffix: "+", label: "Verified organizers" },
-  { value: 47000, suffix: "+", label: "Successful check-ins" },
-]
 
 const categories = [
   { icon: Zap, label: "Technology", count: "840+ events" },
@@ -45,21 +32,6 @@ const categories = [
   { icon: Trophy, label: "Sports", count: "460+ events" },
   { icon: Gamepad2, label: "Gaming", count: "280+ events" },
   { icon: Bot, label: "Hackathons", count: "190+ events" },
-]
-
-const aiFeatures = [
-  { icon: Search, title: "AI search", text: "Find the right event using natural language, not rigid filters." },
-  { icon: Sparkles, title: "Recommendations", text: "A personal event feed shaped around your interests and activity." },
-  { icon: BellRing, title: "Smart reminders", text: "Timely nudges before registration deadlines and event start times." },
-  { icon: MessageSquareText, title: "Smart notifications", text: "Important venue and schedule updates surfaced without the noise." },
-  { icon: WandSparkles, title: "Event discovery", text: "Uncover relevant communities and experiences you might have missed." },
-]
-
-const testimonials = [
-  { quote: "EventHub replaced three tools for our student community. Check-in finally takes minutes, not an hour.", name: "Riya Kapoor", role: "Community lead · TechCircle" },
-  { quote: "The attendee flow is remarkably clear. Our guests register, get a QR, and know exactly what happens next.", name: "Aditya Rao", role: "Organizer · Founders Guild" },
-  { quote: "Certificates used to take our team days to prepare. Now the entire post-event process runs itself.", name: "Neha Sharma", role: "Program manager · EduForward" },
-  { quote: "I discovered two communities I now attend every month. The experience feels built around people, not forms.", name: "Kabir Mehta", role: "Event attendee" },
 ]
 
 const faqs = [
@@ -88,64 +60,11 @@ function Reveal({ children, className = "" }: { children: ReactNode; className?:
   )
 }
 
-function Counter({ value, suffix }: { value: number; suffix: string }) {
-  const ref = useRef<HTMLSpanElement>(null)
-  const inView = useInView(ref, { once: true, amount: 0.8 })
-  const reduce = useReducedMotion()
-  const [count, setCount] = useState(reduce ? value : 0)
-
-  useEffect(() => {
-    if (!inView || reduce) return
-    const duration = 900
-    const start = performance.now()
-    let frame = 0
-    const update = (now: number) => {
-      const progress = Math.min((now - start) / duration, 1)
-      setCount(Math.round(value * (1 - Math.pow(1 - progress, 3))))
-      if (progress < 1) frame = requestAnimationFrame(update)
-    }
-    frame = requestAnimationFrame(update)
-    return () => cancelAnimationFrame(frame)
-  }, [inView, reduce, value])
-
-  return <span ref={ref}>{count.toLocaleString()}{suffix}</span>
-}
-
 export function LandingEnhancements() {
   const reduce = useReducedMotion()
 
   return (
     <>
-      {/* ── Impact Stats ── */}
-      <section className="border-t border-border mesh-bg" aria-labelledby="impact-heading">
-        <div className="mx-auto max-w-7xl px-4 py-24 md:px-6">
-          <Reveal>
-            <Eyebrow>trusted by growing communities</Eyebrow>
-            <h2 id="impact-heading" className="display mt-5 max-w-2xl text-3xl text-foreground md:text-5xl lg:text-6xl">
-              Built for moments that <span className="gradient-text">matter.</span>
-            </h2>
-          </Reveal>
-          <dl className="mt-12 grid grid-cols-2 border-l border-t border-border/60 lg:grid-cols-4">
-            {impact.map((item, index) => (
-              <motion.div
-                key={item.label}
-                className="glass border-b border-r border-border/60 p-6 md:p-8"
-                variants={reveal}
-                initial={reduce ? false : "hidden"}
-                whileInView="visible"
-                viewport={{ once: true }}
-                transition={{ delay: reduce ? 0 : index * 0.08, duration: 0.4 }}
-              >
-                <dd className="display text-3xl text-foreground md:text-4xl">
-                  <Counter value={item.value} suffix={item.suffix} />
-                </dd>
-                <dt className="mt-2 font-mono text-xs text-muted-foreground">{item.label}</dt>
-              </motion.div>
-            ))}
-          </dl>
-        </div>
-      </section>
-
       {/* ── Why EventHub ── */}
       <section className="border-t border-border" aria-labelledby="why-heading">
         <div className="mx-auto max-w-7xl px-4 py-24 md:px-6">
@@ -213,9 +132,7 @@ export function LandingEnhancements() {
               <h2 id="categories-heading" className="display text-3xl text-foreground md:text-5xl lg:text-6xl">
                 A space for every <span className="gradient-text">community.</span>
               </h2>
-              <Link to="/events" className="flex items-center gap-1 font-mono text-sm text-primary hover:underline">
-                explore all <ArrowRight className="size-4" aria-hidden="true" />
-              </Link>
+
             </div>
           </Reveal>
           <motion.div
@@ -375,74 +292,6 @@ export function LandingEnhancements() {
               </div>
             </div>
           </Reveal>
-        </div>
-      </section>
-
-      {/* ── AI Features ── */}
-      <section className="border-t border-border" aria-labelledby="ai-heading">
-        <div className="mx-auto max-w-7xl px-4 py-24 md:px-6">
-          <Reveal>
-            <Eyebrow>intelligent by design · preview</Eyebrow>
-            <h2 id="ai-heading" className="display mt-5 max-w-2xl text-3xl text-foreground md:text-5xl lg:text-6xl">
-              Less searching. More <span className="gradient-text">belonging.</span>
-            </h2>
-            <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground md:text-base">
-              A preview of thoughtful assistance designed to connect attendees with the right events, updates, and communities.
-            </p>
-          </Reveal>
-          <div className="mt-12 bento-grid">
-            {aiFeatures.map((feature, i) => (
-              <motion.article
-                key={feature.title}
-                variants={reveal}
-                initial={reduce ? false : "hidden"}
-                whileInView="visible"
-                viewport={{ once: true }}
-                transition={{ delay: reduce ? 0 : i * 0.07 }}
-                whileHover={reduce ? undefined : { y: -5, transition: { duration: 0.2 } }}
-                className="glass rounded-2xl border border-border/60 p-5 transition-all duration-300 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5 md:p-6"
-              >
-                <span className="flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                  <feature.icon className="size-5" aria-hidden="true" />
-                </span>
-                <h3 className="mt-5 font-extrabold text-foreground">{feature.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{feature.text}</p>
-              </motion.article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Testimonials ── */}
-      <section className="overflow-hidden border-t border-border mesh-bg" aria-labelledby="stories-heading">
-        <div className="mx-auto max-w-7xl px-4 pt-24 md:px-6">
-          <Reveal>
-            <Eyebrow>community stories</Eyebrow>
-            <h2 id="stories-heading" className="display mt-5 text-3xl text-foreground md:text-5xl lg:text-6xl">
-              Built around <span className="gradient-text">real experiences.</span>
-            </h2>
-          </Reveal>
-        </div>
-        <div className="mt-10 overflow-hidden pb-24">
-          <motion.div
-            className="flex w-max gap-5 px-4"
-            animate={reduce ? undefined : { x: [0, -1280] }}
-            transition={reduce ? undefined : { duration: 30, repeat: Infinity, ease: "linear" }}
-          >
-            {[...testimonials, ...testimonials].map((item, index) => (
-              <figure
-                key={`${item.name}-${index}`}
-                className="w-[300px] shrink-0 glass rounded-2xl border border-border/60 p-6 md:w-[360px]"
-              >
-                <span className="font-mono text-3xl text-primary">"</span>
-                <blockquote className="mt-3 text-sm leading-relaxed text-foreground">{item.quote}</blockquote>
-                <figcaption className="mt-6 border-t border-border/60 pt-4">
-                  <p className="font-bold text-foreground">{item.name}</p>
-                  <p className="mt-1 font-mono text-xs text-muted-foreground">{item.role}</p>
-                </figcaption>
-              </figure>
-            ))}
-          </motion.div>
         </div>
       </section>
 

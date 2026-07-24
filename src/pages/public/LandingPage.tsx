@@ -10,6 +10,7 @@ import {
   BellRing,
   BarChart3,
   Search,
+  MessageCircle,
   CalendarCheck,
   ChevronRight,
   Sparkles,
@@ -27,7 +28,14 @@ import { LandingEnhancements } from "@/components/landing/LandingEnhancements"
 const features = [
   {
     icon: Search,
-    title: "Discovery",
+    title: "Create Account",
+    tag: "quick start",
+    description: "Sign up in seconds and set up your profile. Join as an attendee or organizer instantly.",
+    rows: ["One-click sign up", "Attendee & organizer roles"],
+  },
+  {
+    icon: Search,
+    title: "Browse Events",
     tag: "search + filters",
     description: "Search and filter events by category, city, and mode. Everything in one place instead of scattered group chats.",
     rows: ["Filter by category, city & mode", "Online, offline & hybrid events"],
@@ -41,10 +49,10 @@ const features = [
   },
   {
     icon: QrCode,
-    title: "QR Check-in",
-    tag: "at the door",
-    description: "Organizers scan your QR at the door. Attendance is tracked automatically and accurately.",
-    rows: ["Scan tickets at the door", "Attendance marked automatically"],
+    title: "QR Check-In",
+    tag: "seamless",
+    description: "Organizers scan your QR code. Attendance is tracked automatically and accurately.",
+    rows: ["Scan QR at entry", "Attendance marked automatically"],
   },
   {
     icon: Award,
@@ -59,6 +67,13 @@ const features = [
     tag: "smart inbox",
     description: "Registration confirmations, reminders, venue changes, and certificate alerts in one inbox.",
     rows: ["Confirmations & reminders", "Venue change alerts"],
+  },
+  {
+    icon: MessageCircle,
+    title: "Feedback",
+    tag: "reviews",
+    description: "Share your experience after events. Rate, review, and help the community discover great events.",
+    rows: ["Star ratings & reviews", "Help others decide"],
   },
   {
     icon: BarChart3,
@@ -193,7 +208,7 @@ export default function LandingPage() {
                 {[
                   { icon: Search, label: "Discover events", note: "browse", active: false },
                   { icon: CalendarCheck, label: "Register in one tap", note: "ticket + QR", active: true },
-                  { icon: QrCode, label: "Check in at the door", note: "scanned", active: false },
+                  { icon: QrCode, label: "Check in via QR", note: "scanned", active: false },
                   { icon: Award, label: "Receive certificate", note: "auto-issued", active: false },
                 ].map((row) => (
                   <motion.div
@@ -218,7 +233,7 @@ export default function LandingPage() {
               </div>
               <div className="relative z-10 mt-5 rounded-xl bg-secondary/80 p-4">
                 <p className="font-mono text-xs leading-relaxed text-muted-foreground">
-                  <span className="text-success">✓</span> ticket scanned at the door
+                  <span className="text-success">✓</span> ticket scanned at entry
                   <br />
                   <span className="text-success">✓</span> attendance marked present
                   <br />
@@ -305,7 +320,7 @@ export default function LandingPage() {
             initial={reduce ? false : "hidden"}
             whileInView="visible"
             viewport={{ once: true, amount: 0.1 }}
-            className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+            className="mt-14 flex flex-wrap justify-center gap-5"
           >
             {features.map((f) => (
               <motion.div
@@ -313,7 +328,7 @@ export default function LandingPage() {
                 variants={fadeUp}
                 whileHover={reduce ? undefined : { y: -6, transition: { duration: 0.25 } }}
                 transition={{ duration: reduce ? 0 : 0.3 }}
-                className="group glass rounded-2xl border border-border/60 p-6 transition-all duration-300 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5"
+                className="group glass w-full rounded-2xl border border-border/60 p-6 transition-all duration-300 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5 sm:w-[calc(50%-10px)] lg:w-[calc(33.333333%-14px)]"
               >
                 <div className="flex items-start justify-between">
                   <span className="flex size-12 items-center justify-center rounded-xl border border-border/60 bg-primary/10 text-primary transition-colors group-hover:bg-primary/20">
@@ -447,10 +462,10 @@ export default function LandingPage() {
               Register in seconds. <span className="gradient-text">Literally.</span>
             </h2>
             <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground md:text-base">
-              One tap and you're in. Instant QR ticket, confirmation email, and calendar invite — no more Google Forms or spreadsheet chaos.
+              One tap and you're in. Confirmation email and calendar invite — no more Google Forms or spreadsheet chaos.
             </p>
             <ul className="mt-6 flex flex-col gap-3">
-              {["One-tap registration", "Instant QR ticket", "Email confirmation", "Calendar integration"].map((item) => (
+              {["One-tap registration", "Email confirmation", "Calendar invite"].map((item) => (
                 <li key={item} className="flex items-center gap-2 text-sm text-foreground">
                   <span className="size-1.5 rounded-full bg-primary" aria-hidden="true" />
                   {item}
@@ -479,10 +494,10 @@ export default function LandingPage() {
               Scan. Verify. <span className="gradient-text">Done.</span>
             </h2>
             <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground md:text-base">
-              Organizers scan your QR at the door. Attendance is tracked automatically, certificates are issued instantly, and you're on your way.
+              Organizers scan your QR. Attendance is tracked automatically, certificates are issued instantly, and you're on your way.
             </p>
             <ul className="mt-6 flex flex-col gap-3">
-              {["QR scan at the door", "Instant attendance marking", "Auto-issued certificates", "Real-time organizer dashboard"].map((item) => (
+              {["QR scan at entry", "Instant attendance marking", "Auto-issued certificates", "Real-time organizer dashboard"].map((item) => (
                 <li key={item} className="flex items-center gap-2 text-sm text-foreground">
                   <span className="size-1.5 rounded-full bg-primary" aria-hidden="true" />
                   {item}
