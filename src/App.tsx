@@ -23,6 +23,7 @@ import AboutPage from "@/pages/public/AboutPage"
 import ContactPage from "@/pages/public/ContactPage"
 import NotFoundPage from "@/pages/public/NotFoundPage"
 import ForbiddenPage from "@/pages/public/ForbiddenPage"
+
 import LoginPage from "@/pages/auth/LoginPage"
 import RegisterPage from "@/pages/auth/RegisterPage"
 

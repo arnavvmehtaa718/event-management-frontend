@@ -1,6 +1,6 @@
 "use client"
 
-import { type ReactNode, useState, useEffect } from "react"
+import { type ReactNode, useState, useRef, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { motion, useReducedMotion } from "framer-motion"
 import {
@@ -22,6 +22,7 @@ import {
   Zap,
 } from "lucide-react"
 import { Button, Eyebrow, CardGlow } from "@/components/common/ui"
+import { useTheme } from "@/hooks/useTheme"
 
 const categories = [
   { icon: Zap, label: "Technology", count: "840+ events" },
@@ -126,6 +127,19 @@ function AnimatedBarChart({ reduce }: { reduce: boolean }) {
 
 export function LandingEnhancements() {
   const reduce = useReducedMotion()
+  const { theme } = useTheme()
+  const showcaseIframeRef = useRef<HTMLIFrameElement>(null)
+
+  useEffect(() => {
+    const iframe = showcaseIframeRef.current
+    if (!iframe?.contentWindow) return
+    const send = () => {
+      try { iframe.contentWindow!.postMessage({ theme }, "*") } catch {}
+    }
+    send()
+    iframe.addEventListener("load", send)
+    return () => iframe.removeEventListener("load", send)
+  }, [theme, showcaseIframeRef])
 
   return (
     <>
@@ -167,32 +181,19 @@ export function LandingEnhancements() {
             </Reveal>
             <Reveal className="gradient-border rounded-2xl border border-primary/40 bg-accent/80 p-6 md:p-8">
               <div className="relative z-10">
-                <p className="font-mono text-xs text-accent-foreground">The EventHub way</p>
-                <div className="mt-6 rounded-2xl border border-primary/30 bg-card p-5">
-                  <div className="flex items-center gap-3">
-                    <span className="flex size-11 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-                      <CalendarCheck className="size-5" aria-hidden="true" />
-                    </span>
-                    <div>
-                      <p className="font-extrabold text-foreground">One connected platform</p>
-                      <p className="text-sm text-muted-foreground">Discover → register → check in → certify</p>
-                    </div>
-                  </div>
-                  <ul className="mt-6 flex flex-col gap-3">
-                    {["A single source of truth", "Real-time attendance records", "Automatic attendee communication", "Certificates tied to verified attendance"].map((item, i) => (
-                      <motion.li
-                        key={item}
-                        initial={reduce ? false : { opacity: 0, x: 10 }}
-                        whileInView={reduce ? false : { opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: reduce ? 0 : 0.2 + i * 0.08 }}
-                        className="flex items-center gap-2 text-sm text-foreground"
-                      >
-                        <Check className="size-4 text-primary" aria-hidden="true" />
-                        {item}
-                      </motion.li>
-                    ))}
-                  </ul>
+                <div className="flex items-center justify-between">
+                  <p className="font-mono text-xs text-accent-foreground">The EventHub way</p>
+                </div>
+
+                <div className="mt-6 overflow-hidden rounded-2xl border border-primary/30 bg-card">
+                  <iframe
+                    ref={showcaseIframeRef}
+                    src="/eventhub-showcase.html"
+                    title="EventHub Product Demo"
+                    className="h-[400px] w-full border-0 md:h-[500px]"
+                    loading="lazy"
+                    allow="autoplay"
+                  />
                 </div>
               </div>
             </Reveal>

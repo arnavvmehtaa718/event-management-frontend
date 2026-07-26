@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>EventHub — Product Showcase</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.24.7/babel.min.js"></script>
+<style>
+  :root{
+    --bg:#0A0A0A;
+    --surface:#141310;
+    --surface2:#1B1915;
+    --line:#2A2721;
+    --white:#F7F4EC;
+    --gray:#96907F;
+    --gold:#C9A44C;
+    --gold-light:#EAD08A;
+    --gold-dark:#8B6F2E;
+  }
+  :root.light{
+    --bg:#F6F5F2;
+    --surface:#FFFFFF;
+    --surface2:#F0EFEB;
+    --line:#E4E2DC;
+    --white:#111110;
+    --gray:#6F6D66;
+    --gold:#B8920F;
+    --gold-light:#A07D08;
+    --gold-dark:#8B6F2E;
+  }
+  html,body{background:var(--bg);}
+  body{margin:0;font-family:'Manrope',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  .font-display{font-family:'Fraunces',serif;}
+  .font-ui{font-family:'Manrope',sans-serif;}
+  .font-mono{font-family:'JetBrains Mono',monospace;}
+  .scene{position:absolute;inset:0;will-change:transform,opacity;backface-visibility:hidden;}
+  #cursor{position:absolute;left:50%;top:40%;z-index:80;pointer-events:none;opacity:1;transition:opacity .2s;}
+  .click-target{position:relative;}
+  .ripple-el{position:absolute;left:50%;top:50%;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:9999px;background:radial-gradient(circle,rgba(234,208,138,.9) 0%,rgba(234,208,138,0) 70%);opacity:0;transform:scale(0);pointer-events:none;}
+  .char{display:inline-block;opacity:0;transform:translateY(4px);will-change:transform,opacity;}
+  @keyframes shimmerSweep{0%{transform:translateX(-130%) skewX(-12deg);}100%{transform:translateX(230%) skewX(-12deg);}}
+  .shimmer{animation:shimmerSweep 3.2s ease-in-out infinite;}
+  @keyframes scanMove{0%,100%{transform:translateY(-46px);opacity:.15;}50%{transform:translateY(46px);opacity:.9;}}
+  .scanline{animation:scanMove 1.8s ease-in-out infinite;}
+  @keyframes dotPulse{0%,80%,100%{opacity:.25;transform:translateY(0);}40%{opacity:1;transform:translateY(-3px);}}
+  .typedot{animation:dotPulse 1.2s ease-in-out infinite;}
+  @keyframes softFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+  .float{animation:softFloat 6s ease-in-out infinite;}
+  @keyframes glowPulse{0%,100%{opacity:.55;}50%{opacity:1;}}
+  .glowpulse{animation:glowPulse 2.4s ease-in-out infinite;}
+  ::selection{background:var(--gold);color:#000;}
+  :root.light .bg-\[\#0A0A0A\]{background:var(--bg)!important;}
+  :root.light .bg-\[\#0F0E0C\]{background:var(--surface)!important;}
+  :root.light .text-white{color:var(--white)!important;}
+  :root.light .text-white\/85{color:rgba(17,17,16,.85)!important;}
+  :root.light .text-white\/80{color:rgba(17,17,16,.8)!important;}
+  :root.light .text-white\/70{color:rgba(17,17,16,.7)!important;}
+  :root.light .text-white\/60{color:rgba(17,17,16,.6)!important;}
+  :root.light .text-white\/55{color:rgba(17,17,16,.55)!important;}
+  :root.light .text-white\/50{color:rgba(17,17,16,.5)!important;}
+  :root.light .text-white\/45{color:rgba(17,17,16,.45)!important;}
+  :root.light .text-white\/40{color:rgba(17,17,16,.4)!important;}
+  :root.light .text-white\/35{color:rgba(17,17,16,.35)!important;}
+  :root.light .text-white\/25{color:rgba(17,17,16,.25)!important;}
+  :root.light .border-white\/10{border-color:rgba(17,17,16,.1)!important;}
+  :root.light .border-white\/12{border-color:rgba(17,17,16,.12)!important;}
+  :root.light .border-white\/15{border-color:rgba(17,17,16,.15)!important;}
+  :root.light .bg-white\/\[0\.04\]{background:rgba(17,17,16,.04)!important;}
+  :root.light .bg-white\/\[0\.03\]{background:rgba(17,17,16,.03)!important;}
+  :root.light .bg-white\/5{background:rgba(17,17,16,.05)!important;}
+  :root.light .bg-white\/8{background:rgba(17,17,16,.08)!important;}
+  :root.light .bg-white\/15{background:rgba(17,17,16,.15)!important;}
+  :root.light .bg-black\/40{background:rgba(17,17,16,.4)!important;}
+  :root.light .shadow-\[0_40px_120px_-30px_rgba\(0\,0\,0\,0\.9\)\]{box-shadow:0 40px 120px -30px rgba(0,0,0,.15)!important;}
+  .noscroll{scrollbar-width:none;}
+  .noscroll::-webkit-scrollbar{display:none;}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  window.addEventListener("load", function () {
+    setTimeout(function () {
+      var root = document.getElementById("root");
+      if (root && root.children.length === 0) {
+        var missing = [];
+        if (typeof window.React === "undefined") missing.push("React");
+        if (typeof window.ReactDOM === "undefined") missing.push("ReactDOM");
+        if (typeof window.gsap === "undefined") missing.push("GSAP");
+        if (typeof window.Babel === "undefined") missing.push("Babel");
+        root.innerHTML =
+          '<div style="font-family:sans-serif;color:#eee;background:#141310;padding:32px;border-radius:12px;max-width:520px;margin:60px auto;line-height:1.6;">' +
+          '<strong>This page could not load its scripts' + (missing.length ? " (" + missing.join(", ") + " missing)" : "") + '.</strong><br/>' +
+          'This usually means an ad blocker, corporate proxy, or offline mode is blocking cdnjs.cloudflare.com. ' +
+          'Try disabling any content/script blockers for this page, or opening it in a different browser, then refresh.' +
+          '</div>';
+      }
+    }, 3000);
+  });
+</script>
+
+<script type="text/babel" data-presets="react">
+const {useEffect, useRef, useLayoutEffect} = React;
+
+/* ---------------------------------- ICONS ---------------------------------- */
+const IconWrap = ({children, size=16, className=""}) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className={className}>{children}</svg>
+);
+const IconSearch = (p) => <IconWrap {...p}><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.2" y2="16.2"/></IconWrap>;
+const IconMapPin = (p) => <IconWrap {...p}><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.4"/></IconWrap>;
+const IconCalendar = (p) => <IconWrap {...p}><rect x="3.5" y="5" width="17" height="16" rx="2.5"/><line x1="3.5" y1="9.5" x2="20.5" y2="9.5"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></IconWrap>;
+const IconUsers = (p) => <IconWrap {...p}><circle cx="9" cy="9" r="3.2"/><path d="M3.5 20c.8-3.3 3-5 5.5-5s4.7 1.7 5.5 5"/><circle cx="17.5" cy="9.5" r="2.6"/><path d="M15.5 15c2 .1 3.7 1.6 4.3 4.2"/></IconWrap>;
+const IconHeart = (p) => <IconWrap {...p}><path d="M12 20s-7.5-4.6-9.8-9.3C.8 7.2 2.4 4 5.8 3.6c2-.2 3.6.8 4.9 2.4l1.3 1.6 1.3-1.6c1.3-1.6 2.9-2.6 4.9-2.4 3.4.4 5 3.6 3.6 7.1C19.5 15.4 12 20 12 20z"/></IconWrap>;
+const IconArrowLeft = (p) => <IconWrap {...p}><line x1="20" y1="12" x2="4" y2="12"/><polyline points="10 6 4 12 10 18"/></IconWrap>;
+const IconTicket = (p) => <IconWrap {...p}><path d="M3 8.5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 3v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-3v-2z"/><line x1="12" y1="6.5" x2="12" y2="17.5" strokeDasharray="2.4 2.4"/></IconWrap>;
+const IconCheck = (p) => <IconWrap {...p}><polyline points="4 12.5 9.5 18 20 6"/></IconWrap>;
+const IconDownload = (p) => <IconWrap {...p}><path d="M12 3.5v11.5"/><polyline points="7 10.5 12 15.5 17 10.5"/><path d="M4.5 18.5h15"/></IconWrap>;
+const IconAward = (p) => <IconWrap {...p}><circle cx="12" cy="8.5" r="5.2"/><path d="M8.3 12.9 6.8 20.5l5.2-2.6 5.2 2.6-1.5-7.6"/></IconWrap>;
+const IconChat = (p) => <IconWrap {...p}><path d="M4 5h16v11H8l-4 4V5z"/></IconWrap>;
+const IconSend = (p) => <IconWrap {...p}><line x1="20.5" y1="3.5" x2="10" y2="14"/><path d="M20.5 3.5 14 20.5l-4-6.5-6.5-4z"/></IconWrap>;
+const IconStar = (p) => <IconWrap {...p}><polygon points="12 3 14.7 9 21.3 9.6 16.3 13.9 17.8 20.4 12 17 6.2 20.4 7.7 13.9 2.7 9.6 9.3 9 12 3"/></IconWrap>;
+const IconQr = (p) => <IconWrap {...p}><rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1"/><rect x="14" y="3.5" width="6.5" height="6.5" rx="1"/><rect x="3.5" y="14" width="6.5" height="6.5" rx="1"/><line x1="14" y1="14" x2="14" y2="20.5"/><line x1="20.5" y1="14" x2="20.5" y2="20.5"/><line x1="17.2" y1="14" x2="17.2" y2="17.2"/><line x1="14" y1="17.2" x2="20.5" y2="17.2"/></IconWrap>;
+const IconWallet = (p) => <IconWrap {...p}><rect x="3" y="6.5" width="18" height="13" rx="2.4"/><path d="M3 10h18"/><circle cx="16.5" cy="14.2" r="1.1" fill="currentColor" stroke="none"/></IconWrap>;
+
+/* ---------------------------------- SMALL UI ---------------------------------- */
+const Ripple = ({id}) => <span id={id} className="ripple-el"></span>;
+
+const GoldButton = ({id, children, className=""}) => (
+  <button id={id} className={"click-target font-ui font-semibold text-[13px] tracking-wide text-black bg-gradient-to-r from-[#C9A44C] to-[#EAD08A] rounded-full px-5 py-2.5 shadow-[0_8px_24px_-8px_rgba(201,164,76,.65)] inline-flex items-center gap-1.5 " + className}>
+    {children}
+    <Ripple id={id+"-ripple"} />
+  </button>
+);
+
+const GhostButton = ({id, children, className=""}) => (
+  <button id={id} className={"click-target font-ui font-medium text-[13px] text-[var(--white)]/85 border border-white/15 rounded-full px-5 py-2.5 inline-flex items-center gap-1.5 " + className}>
+    {children}
+    <Ripple id={id+"-ripple"} />
+  </button>
+);
+
+const TypeText = ({id, text, className=""}) => (
+  <span id={id} className={className}>
+    {text.split("").map((c,i)=>(<span className="char" key={i}>{c === " " ? "\u00A0" : c}</span>))}
+  </span>
+);
+
+const Eyebrow = ({children}) => (
+  <div className="font-mono text-[10px] tracking-[0.25em] text-[var(--gold)] uppercase mb-3">{children}</div>
+);
+
+/* ---------------------------------- QR CODE ---------------------------------- */
+const QR_PATTERN = [
+  [1,1,1,1,1,1,1,0,1,0,1,1,1,1,1,1,1],
+  [1,0,0,0,0,0,1,0,0,1,0,1,0,0,0,0,1],
+  [1,0,1,1,1,0,1,0,1,0,1,0,1,1,1,0,1],
+  [1,0,1,1,1,0,1,0,0,1,1,0,1,1,1,0,1],
+  [1,0,1,1,1,0,1,0,1,0,0,0,1,1,1,0,1],
+  [1,0,0,0,0,0,1,0,0,1,1,0,0,0,0,0,1],
+  [1,1,1,1,1,1,1,0,1,0,1,0,1,1,1,1,1],
+  [0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0],
+  [1,0,1,0,1,1,0,1,0,1,0,1,1,0,1,1,0],
+  [0,1,0,1,0,0,1,0,1,0,1,1,0,1,0,0,1],
+  [1,1,1,1,1,1,1,0,1,1,0,1,0,1,1,0,1],
+  [0,0,0,0,0,0,0,0,0,1,1,0,1,0,0,1,0],
+  [1,1,1,1,1,1,1,0,1,0,1,1,0,1,1,0,1],
+  [1,0,0,0,0,0,1,0,0,1,0,0,1,0,0,1,0],
+  [1,0,1,1,1,0,1,0,1,1,1,0,1,1,0,1,1],
+  [1,0,1,1,1,0,1,0,0,0,1,1,0,0,1,0,0],
+  [1,1,1,1,1,1,1,0,1,1,0,1,1,0,1,1,0],
+];
+const QRCode = ({size=120}) => {
+  const cell = size / QR_PATTERN.length;
+  return (
+    <div style={{width:size, height:size}} className="bg-[var(--white)] rounded-md p-1.5 shrink-0">
+      <svg width="100%" height="100%" viewBox={`0 0 ${size} ${size}`}>
+        {QR_PATTERN.map((row,y)=>row.map((v,x)=> v ? <rect key={x+"-"+y} x={x*cell} y={y*cell} width={cell+0.4} height={cell+0.4} fill="#0A0A0A"/> : null))}
+      </svg>
+    </div>
+  );
+};
+
+/* ---------------------------------- BROWSER CHROME ---------------------------------- */
+const URL_PATHS = [
+  "eventhub.io", "eventhub.io/search?q=tech", "eventhub.io/events/ai-summit-2026",
+  "eventhub.io/checkout/confirmed", "eventhub.io/tickets/9f31-ac", "eventhub.io/checkin/scan",
+  "eventhub.io/certificates/view", "eventhub.io/community/ai-summit"
+];
+
+const BrowserChrome = ({viewportRef, children}) => (
+  <div className="w-full max-w-[980px] mx-auto rounded-2xl overflow-hidden border border-white/10 shadow-[0_40px_120px_-30px_rgba(0,0,0,0.9)] bg-[var(--surface)]">
+    <div className="flex items-center gap-4 px-4 py-3 bg-[#0F0E0C] border-b border-white/10">
+      <div className="flex items-center gap-2">
+        <span className="w-2.5 h-2.5 rounded-full bg-white/15"></span>
+        <span className="w-2.5 h-2.5 rounded-full bg-white/15"></span>
+        <span className="w-2.5 h-2.5 rounded-full bg-white/15"></span>
+      </div>
+      <div className="flex-1 max-w-[420px] mx-auto bg-white/5 border border-white/10 rounded-full px-4 py-1.5 flex items-center gap-2 overflow-hidden relative h-7">
+        <span className="w-1.5 h-1.5 rounded-full bg-[var(--gold)]"></span>
+        <div className="relative flex-1 h-full">
+          {URL_PATHS.map((p,i)=>(
+            <span id={"url-"+i} key={i} className="font-mono text-[11px] text-white/60 absolute inset-0 flex items-center" style={{opacity:i===0?1:0}}>{p}</span>
+          ))}
+        </div>
+      </div>
+      <div className="w-16 hidden sm:block"></div>
+    </div>
+    <div ref={viewportRef} id="viewport" className="relative w-full aspect-[16/10] bg-[var(--bg)] overflow-hidden noscroll">
+      {children}
+      <div id="cursor">
+        <svg width="26" height="26" viewBox="0 0 26 26" style={{filter:"drop-shadow(0 4px 10px rgba(0,0,0,.6))"}}>
+          <path d="M4 2 L4 20 L9 15.5 L12.5 22.5 L15.5 21 L12 14 L18.5 14 Z" fill="#F7F4EC" stroke="#0A0A0A" strokeWidth="1.1" strokeLinejoin="round"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+);
+
+/* ---------------------------------- SCENE 1 : HOMEPAGE ---------------------------------- */
+const SceneHomepage = () => (
+  <div id="scene-1" className="scene bg-[radial-gradient(ellipse_at_top,rgba(201,164,76,.14),transparent_60%),linear-gradient(#0A0A0A,#0A0A0A)]">
+    <div className="absolute -top-24 -left-16 w-72 h-72 rounded-full bg-[var(--gold)]/10 blur-[90px] float"></div>
+    <div className="absolute -bottom-16 -right-10 w-72 h-72 rounded-full bg-[var(--gold)]/10 blur-[90px] float" style={{animationDelay:"2s"}}></div>
+    <nav className="relative z-10 flex items-center justify-between px-8 py-5">
+      <div className="flex items-center gap-2">
+        <div className="w-6 h-6 rounded-md bg-gradient-to-br from-[var(--gold-light)] to-[var(--gold-dark)] flex items-center justify-center"><IconTicket size={13} className="text-black"/></div>
+        <span className="font-display text-[15px] text-white tracking-wide">EventHub</span>
+      </div>
+      <div className="hidden md:flex items-center gap-7 font-ui text-[12px] text-white/60">
+        <span>Discover</span><span>Events</span><span>Community</span>
+      </div>
+      <GhostButton id="nav-signin" className="!py-1.5 !px-4 !text-[11px]">Sign In</GhostButton>
+    </nav>
+    <div className="relative z-10 flex flex-col items-center text-center px-6 pt-6 md:pt-8">
+      <Eyebrow>Curated Experiences</Eyebrow>
+      <h1 className="font-display text-white text-[30px] md:text-[42px] leading-[1.08] max-w-[560px]">
+        Discover Events<br/>Worth <span className="italic text-[var(--gold-light)]">Showing Up</span> For
+      </h1>
+      <p className="font-ui text-white/50 text-[13px] mt-4 max-w-[380px]">From summits to street fairs — find, register, and check in, all in one place.</p>
+      <div className="flex items-center gap-3 mt-6">
+        <GoldButton id="hero-cta">Explore Events</GoldButton>
+        <GhostButton id="hero-secondary">How it works</GhostButton>
+      </div>
+    </div>
+    <div className="absolute bottom-0 left-0 right-0 px-8 pb-6 flex gap-4 justify-center opacity-90">
+      {["AI & Future Summit","Indie Music Fest","Design Leaders Meet"].map((t,i)=>(
+        <div key={i} className="w-[26%] md:w-[180px] rounded-lg bg-white/5 border border-white/10 backdrop-blur-sm p-2.5 translate-y-3">
+          <div className="h-10 rounded-md bg-gradient-to-br from-[var(--gold)]/30 to-transparent mb-2"></div>
+          <div className="font-ui text-white/80 text-[10px] truncate">{t}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+/* ---------------------------------- SCENE 2 : SEARCH ---------------------------------- */
+const EventCard = ({id, title, meta, price}) => (
+  <div id={id} className="click-target rounded-xl bg-white/[0.04] border border-white/10 overflow-hidden hover:border-[var(--gold)]/40">
+    <div className="h-16 bg-[linear-gradient(135deg,rgba(201,164,76,.35),rgba(201,164,76,.03))] relative">
+      <IconHeart size={14} className="absolute top-2 right-2 text-white/70"/>
+    </div>
+    <div className="p-3">
+      <div className="font-ui text-white text-[12px] font-semibold truncate">{title}</div>
+      <div className="font-ui text-white/45 text-[10px] mt-1">{meta}</div>
+      <div className="flex items-center justify-between mt-2">
+        <span className="font-mono text-[var(--gold-light)] text-[11px]">{price}</span>
+        <span className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center"><IconArrowLeft size={10} className="rotate-180 text-white/70"/></span>
+      </div>
+    </div>
+    <Ripple id={id+"-ripple"} />
+  </div>
+);
+
+const SceneSearch = () => (
+  <div id="scene-2" className="scene bg-[var(--bg)] px-8 py-7">
+    <Eyebrow>Search</Eyebrow>
+    <div id="searchbar" className="click-target flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-2.5 max-w-[420px]">
+      <IconSearch size={14} className="text-white/40"/>
+      <TypeText id="search-typed" text="Tech Conference 2026" className="font-ui text-white/85 text-[12px]"/>
+      <span className="w-[1px] h-3 bg-[var(--gold)] ml-0.5"></span>
+    </div>
+    <div className="flex items-center gap-2 mt-4">
+      {["All","Music","Business","Tech","Art"].map((c,i)=>(
+        <span id={"chip-"+i} key={i} className={"click-target relative font-ui text-[10px] px-3 py-1.5 rounded-full border " + (c==="Tech" ? "text-black bg-[var(--gold-light)] border-transparent" : "text-white/55 border-white/12")}>{c}<Ripple id={"chip-"+i+"-ripple"} /></span>
+      ))}
+    </div>
+    <div className="grid grid-cols-3 gap-3 mt-5">
+      <EventCard id="card-1" title="AI & Future Summit 2026" meta="Mar 14 · San Francisco" price="$149" />
+      <EventCard id="card-2" title="Cloud Native Days" meta="Apr 02 · Austin" price="$89" />
+      <EventCard id="card-3" title="Design Systems Conf" meta="Apr 20 · Remote" price="$59" />
+    </div>
+  </div>
+);
+
+/* ---------------------------------- SCENE 3 : EVENT DETAILS ---------------------------------- */
+const SceneDetails = () => (
+  <div id="scene-3" className="scene bg-[var(--bg)]">
+    <div className="relative h-28 bg-[linear-gradient(120deg,rgba(201,164,76,.32),rgba(20,19,16,.2))] px-6 pt-5 flex items-start justify-between">
+      <span className="w-7 h-7 rounded-full bg-black/40 flex items-center justify-center"><IconArrowLeft size={13} className="text-white"/></span>
+      <span id="fav-heart" className="click-target w-7 h-7 rounded-full bg-black/40 flex items-center justify-center relative">
+        <IconHeart size={13} className="text-white heart-icon"/>
+        <Ripple id="fav-heart-ripple"/>
+      </span>
+    </div>
+    <div className="px-7 -mt-4 relative z-10">
+      <div className="bg-[var(--surface2)] border border-white/10 rounded-xl p-4">
+        <h2 className="font-display text-white text-[19px]">AI &amp; Future Summit 2026</h2>
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 mt-2 font-ui text-[10.5px] text-white/55">
+          <span className="flex items-center gap-1"><IconCalendar size={11} className="text-[var(--gold)]"/>Mar 14, 2026 · 9:00 AM</span>
+          <span className="flex items-center gap-1"><IconMapPin size={11} className="text-[var(--gold)]"/>Moscone Center, SF</span>
+          <span className="flex items-center gap-1"><IconUsers size={11} className="text-[var(--gold)]"/>2.4k going</span>
+        </div>
+        <div className="space-y-1.5 mt-3">
+          <div className="h-1.5 rounded-full bg-white/8 w-full"></div>
+          <div className="h-1.5 rounded-full bg-white/8 w-[85%]"></div>
+          <div className="h-1.5 rounded-full bg-white/8 w-[60%]"></div>
+        </div>
+        <div className="grid grid-cols-2 gap-2.5 mt-4">
+          <div className="rounded-lg border border-white/10 p-2.5">
+            <div className="font-ui text-white/80 text-[11px] font-semibold">General</div>
+            <div className="font-mono text-white/50 text-[10px] mt-0.5">$149</div>
+          </div>
+          <div className="rounded-lg border border-[var(--gold)]/50 bg-[var(--gold)]/5 p-2.5 relative">
+            <span className="absolute -top-2 right-2 text-[8px] font-ui bg-[var(--gold)] text-black px-1.5 py-0.5 rounded-full">POPULAR</span>
+            <div className="font-ui text-[var(--gold-light)] text-[11px] font-semibold">VIP Access</div>
+            <div className="font-mono text-white/50 text-[10px] mt-0.5">$349</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div className="absolute bottom-0 left-0 right-0 px-7 py-4 flex items-center justify-between bg-gradient-to-t from-[var(--bg)] via-[var(--bg)]/90 to-transparent">
+      <div>
+        <div className="font-ui text-white/40 text-[9px]">From</div>
+        <div className="font-display text-white text-[18px]">$149</div>
+      </div>
+      <GoldButton id="register-btn">Register Now</GoldButton>
+    </div>
+  </div>
+);
+
+/* ---------------------------------- SCENE 4 : REGISTRATION CONFIRMATION ---------------------------------- */
+const SceneConfirmation = () => (
+  <div id="scene-4" className="scene bg-[var(--bg)] flex items-center justify-center px-8">
+    <div id="confetti-wrap" className="absolute inset-0 pointer-events-none">
+      {Array.from({length:10}).map((_,i)=>(
+        <span key={i} className="confetti-dot absolute w-1.5 h-1.5 rounded-full bg-[var(--gold-light)]" style={{left:(20+i*6.5)+"%", top:"38%", opacity:0}}></span>
+      ))}
+    </div>
+    <div className="w-full max-w-[300px] rounded-2xl border border-white/10 bg-[var(--surface2)] p-6 text-center">
+      <div id="success-ring" className="w-14 h-14 mx-auto rounded-full bg-gradient-to-br from-[var(--gold-light)] to-[var(--gold-dark)] flex items-center justify-center" style={{transform:"scale(0)"}}>
+        <IconCheck size={22} className="text-black"/>
+      </div>
+      <h3 className="font-display text-white text-[18px] mt-4">You're Registered!</h3>
+      <p className="font-ui text-white/45 text-[11px] mt-1">A confirmation has been sent to your inbox.</p>
+      <div className="mt-4 border-t border-white/10 pt-3 text-left space-y-1.5">
+        <div className="flex justify-between font-ui text-[10.5px]"><span className="text-white/40">Event</span><span className="text-white/80">AI &amp; Future Summit</span></div>
+        <div className="flex justify-between font-ui text-[10.5px]"><span className="text-white/40">Ticket</span><span className="text-white/80">VIP Access</span></div>
+        <div className="flex justify-between font-ui text-[10.5px]"><span className="text-white/40">Order</span><span className="text-[var(--gold-light)] font-mono">#EH-9F31AC</span></div>
+      </div>
+      <GoldButton id="view-ticket-btn" className="w-full justify-center mt-5">View Ticket</GoldButton>
+    </div>
+  </div>
+);
+
+/* ---------------------------------- SCENE 5 : QR TICKET ---------------------------------- */
+const SceneTicket = () => (
+  <div id="scene-5" className="scene bg-[var(--bg)] flex items-center justify-center px-8">
+    <div id="ticket-card" className="relative w-full max-w-[420px] rounded-2xl overflow-hidden border border-white/10 bg-[var(--surface2)] flex" style={{transform:"scale(.92)"}}>
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="shimmer absolute -top-10 -bottom-10 left-0 w-1/3 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+      </div>
+      <div className="w-[30%] bg-[linear-gradient(160deg,rgba(201,164,76,.35),rgba(20,19,16,.4))] p-4 flex flex-col items-center justify-center border-r border-dashed border-white/15 relative">
+        <IconTicket size={20} className="text-[var(--gold-light)]"/>
+        <span className="font-mono text-white/50 text-[8px] mt-2 rotate-90 whitespace-nowrap">GA-9F31</span>
+        {Array.from({length:6}).map((_,i)=>(<span key={i} className="absolute w-2.5 h-2.5 rounded-full bg-[var(--bg)]" style={{right:"-5px", top:(8+i*16)+"%"}}></span>))}
+      </div>
+      <div className="flex-1 p-4">
+        <div className="font-ui text-[var(--gold-light)] text-[9px] tracking-widest uppercase">VIP Access</div>
+        <div className="font-display text-white text-[15px] mt-0.5">AI &amp; Future Summit 2026</div>
+        <div className="font-ui text-white/45 text-[10px] mt-1">Mar 14 · 9:00 AM · Moscone Center</div>
+        <div className="flex items-end justify-between mt-3">
+          <QRCode size={72} />
+          <div className="text-right">
+            <div className="font-ui text-white/35 text-[8px]">Ticket ID</div>
+            <div className="font-mono text-white/70 text-[9px]">EH-9F31-AC</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div className="absolute bottom-8 flex gap-2.5">
+      <GoldButton id="wallet-btn"><IconWallet size={12}/>Add to Wallet</GoldButton>
+      <GhostButton id="download-btn"><IconDownload size={12}/>Download</GhostButton>
+    </div>
+  </div>
+);
+
+/* ---------------------------------- SCENE 6 : QR CHECK-IN ---------------------------------- */
+const SceneCheckIn = () => (
+  <div id="scene-6" className="scene bg-[var(--bg)] flex flex-col items-center justify-center px-8">
+    <Eyebrow>Check-In Kiosk</Eyebrow>
+    <div id="scan-frame" className="relative w-40 h-40 rounded-2xl border border-white/10 bg-white/[0.03] flex items-center justify-center overflow-hidden">
+      {["-top-[1px] -left-[1px] border-t-2 border-l-2","-top-[1px] -right-[1px] border-t-2 border-r-2","-bottom-[1px] -left-[1px] border-b-2 border-l-2","-bottom-[1px] -right-[1px] border-b-2 border-r-2"].map((c,i)=>(
+        <span key={i} id={"corner-"+i} className={"absolute w-6 h-6 rounded-sm border-[var(--gold)] "+c}></span>
+      ))}
+      <div className="scanline absolute left-2 right-2 h-[2px] bg-[var(--gold-light)] shadow-[0_0_12px_2px_rgba(234,208,138,.7)]"></div>
+      <div id="mini-ticket" className="relative z-10" style={{opacity:0, transform:"translate(70px,70px) scale(.5)"}}>
+        <QRCode size={68} />
+      </div>
+      <div id="checkin-success" className="absolute inset-0 flex flex-col items-center justify-center bg-[var(--bg)]/95" style={{opacity:0}}>
+        <div className="w-11 h-11 rounded-full bg-gradient-to-br from-[var(--gold-light)] to-[var(--gold-dark)] flex items-center justify-center">
+          <IconCheck size={18} className="text-black"/>
+        </div>
+        <div className="font-ui text-white text-[11px] mt-2 tracking-wide">Checked In</div>
+      </div>
+    </div>
+    <div className="font-ui text-white/40 text-[10.5px] mt-4">Hold your ticket up to the scanner</div>
+  </div>
+);
+
+/* ---------------------------------- SCENE 7 : CERTIFICATE ---------------------------------- */
+const SceneCertificate = () => (
+  <div id="scene-7" className="scene bg-[var(--bg)] flex items-center justify-center px-8">
+    <div className="w-full max-w-[440px] aspect-[1.5/1] bg-[var(--white)] rounded-lg p-3 relative">
+      <div className="absolute inset-2 border-2 border-[var(--gold)] rounded-md"></div>
+      <div className="absolute inset-[10px] border border-[var(--gold)]/50 rounded-md"></div>
+      <div className="relative h-full flex flex-col items-center justify-center text-center px-6">
+        <IconAward size={20} className="text-[var(--gold-dark)]"/>
+        <div className="font-display text-[#111] text-[15px] mt-1.5 tracking-wide">Certificate of Participation</div>
+        <div className="font-ui text-black/40 text-[9px] mt-2">This certifies that</div>
+        <TypeText id="cert-name" text="Arnav Mehta" className="font-display italic text-[#111] text-[17px] mt-1"/>
+        <div className="font-ui text-black/40 text-[9px] mt-1.5 max-w-[260px]">successfully completed AI &amp; Future Summit 2026</div>
+        <div className="flex items-center gap-8 mt-3">
+          <div className="w-16 h-[1px] bg-black/20"></div>
+          <div className="w-16 h-[1px] bg-black/20"></div>
+        </div>
+      </div>
+      <div id="cert-seal" className="absolute right-5 bottom-5 w-11 h-11 rounded-full bg-gradient-to-br from-[var(--gold-light)] to-[var(--gold-dark)] flex items-center justify-center shadow-lg" style={{transform:"translateY(-40px) scale(0)"}}>
+        <IconStar size={16} className="text-black"/>
+      </div>
+    </div>
+    <div className="absolute bottom-8">
+      <GoldButton id="cert-download-btn"><IconDownload size={12}/>Download Certificate</GoldButton>
+    </div>
+  </div>
+);
+
+/* ---------------------------------- SCENE 8 : COMMUNITY CHAT ---------------------------------- */
+const ChatBubble = ({id, mine, text, name}) => (
+  <div id={id} className={"flex items-end gap-2 " + (mine ? "flex-row-reverse" : "")} style={{opacity:0}}>
+    {!mine && <span className="w-6 h-6 rounded-full bg-gradient-to-br from-[var(--gold)]/50 to-transparent border border-white/10 shrink-0"></span>}
+    <div className={"max-w-[68%] rounded-2xl px-3 py-2 font-ui text-[11px] " + (mine ? "bg-gradient-to-br from-[var(--gold-light)] to-[var(--gold)] text-black rounded-br-sm" : "bg-white/8 text-white/85 rounded-bl-sm border border-white/10")}>
+      {!mine && <div className="text-[9px] text-[var(--gold-light)] font-semibold mb-0.5">{name}</div>}
+      {text}
+    </div>
+  </div>
+);
+
+const SceneChat = () => (
+  <div id="scene-8" className="scene bg-[var(--bg)] flex flex-col px-6 py-5">
+    <div className="flex items-center justify-between pb-3 border-b border-white/10">
+      <div>
+        <div className="font-ui text-white text-[12px] font-semibold flex items-center gap-1.5"><IconChat size={12} className="text-[var(--gold)]"/>AI &amp; Future Summit</div>
+        <div className="font-ui text-white/40 text-[9.5px] mt-0.5">248 members online</div>
+      </div>
+      <div className="flex -space-x-2">
+        {Array.from({length:4}).map((_,i)=>(<span key={i} className="w-5 h-5 rounded-full bg-gradient-to-br from-[var(--gold)]/60 to-transparent border-2 border-[var(--bg)]"></span>))}
+      </div>
+    </div>
+    <div className="flex-1 flex flex-col gap-2.5 py-3 justify-end">
+      <ChatBubble id="msg-1" name="Priya" text="Anyone catching the keynote at 9?" />
+      <ChatBubble id="msg-2" name="Diego" text="Front row already 🔥" />
+      <div id="typing-indicator" className="flex items-center gap-1 pl-8" style={{opacity:0}}>
+        <span className="typedot w-1.5 h-1.5 rounded-full bg-white/40"></span>
+        <span className="typedot w-1.5 h-1.5 rounded-full bg-white/40" style={{animationDelay:".2s"}}></span>
+        <span className="typedot w-1.5 h-1.5 rounded-full bg-white/40" style={{animationDelay:".4s"}}></span>
+      </div>
+      <ChatBubble id="msg-3" mine text="Same here — see you all after!" />
+    </div>
+    <div className="flex items-center gap-2 pt-2 border-t border-white/10">
+      <div id="chat-input" className="flex-1 bg-white/5 border border-white/10 rounded-full px-3 py-2 font-ui text-white/40 text-[11px]">Message the community…</div>
+      <span id="send-btn" className="click-target w-8 h-8 rounded-full bg-gradient-to-br from-[var(--gold-light)] to-[var(--gold-dark)] flex items-center justify-center relative">
+        <IconSend size={13} className="text-black"/>
+        <Ripple id="send-btn-ripple"/>
+      </span>
+    </div>
+  </div>
+);
+
+/* ---------------------------------- PROGRESS DOTS ---------------------------------- */
+const ProgressDots = () => (
+  <div className="flex items-center justify-center gap-1.5 mt-5">
+    {Array.from({length:8}).map((_,i)=>(
+      <span key={i} id={"dot-"+i} className="h-1 rounded-full bg-white/15" style={{width:8}}></span>
+    ))}
+  </div>
+);
+
+/* ---------------------------------- APP / MASTER TIMELINE ---------------------------------- */
+const App = () => {
+  const viewportRef = useRef(null);
+  const tlRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const build = () => {
+        if (tlRef.current) tlRef.current.kill();
+        const moveCursorTo = (tl, targetId, offsetX, offsetY) => {
+          const ox = offsetX || -6;
+          const oy = offsetY || -2;
+          tl.add(() => {
+            const vp = document.getElementById("viewport");
+            const el = document.getElementById(targetId);
+            if (!vp || !el) return;
+            const vpR = vp.getBoundingClientRect();
+            const eR = el.getBoundingClientRect();
+            const x = eR.left - vpR.left + eR.width / 2 + ox;
+            const y = eR.top - vpR.top + eR.height / 2 + oy;
+            gsap.to("#cursor", { left: x, top: y, duration: 0.45, ease: "power2.inOut" });
+          });
+        };
+
+        const pressRipple = (tl, targetId) => {
+          tl.to("#"+targetId, {scale:0.94, duration:0.12, ease:"power1.in"}, ">-0.02")
+            .to("#"+targetId+"-ripple", {opacity:.9, scale:2.6, duration:0.001}, "<")
+            .to("#"+targetId+"-ripple", {opacity:0, duration:0.5}, "<")
+            .to("#"+targetId, {scale:1, duration:0.25, ease:"back.out(2)"}, ">-0.05");
+        };
+
+        const crossfade = (tl, fromN, toN, urlIdx) => {
+          tl.to("#scene-"+fromN, {opacity:0, scale:0.965, y:-14, duration:0.6, ease:"power2.inOut"})
+            .fromTo("#scene-"+toN, {scale:1.035, y:16}, {opacity:1, scale:1, y:0, duration:0.6, ease:"power2.inOut"}, "<")
+            .to("#url-"+(fromN-1), {opacity:0, duration:0.35}, "<")
+            .to("#url-"+urlIdx, {opacity:1, duration:0.35}, "<")
+            .to("#dot-"+(fromN-1), {backgroundColor:"rgba(255,255,255,.15)", width:8, duration:0.3}, "<")
+            .to("#dot-"+urlIdx, {backgroundColor:"#C9A44C", width:20, duration:0.3}, "<");
+        };
+
+        /* Reset any leftover transforms from a prior build (e.g. after resize) so
+           measurements below reflect true rest-state layout, not a scaled/offset one. */
+        gsap.set(["#scene-1","#scene-2","#scene-3","#scene-4","#scene-5","#scene-6","#scene-7","#scene-8"], {clearProps:"transform,opacity"});
+
+        gsap.set(["#scene-1","#scene-2","#scene-3","#scene-4","#scene-5","#scene-6","#scene-7","#scene-8"], {opacity:0, scale:1.035, y:16});
+        gsap.set("#scene-1", {opacity:1, scale:1, y:0});
+        gsap.set("#success-ring", {scale:0});
+        gsap.set("#mini-ticket", {opacity:0});
+        gsap.set("#checkin-success", {opacity:0});
+        gsap.set("#cert-seal", {y:-40, scale:0, rotate:-25});
+        gsap.set(["#msg-1","#msg-2","#msg-3"], {opacity:0, y:10});
+        gsap.set("#typing-indicator", {opacity:0});
+        gsap.set(".confetti-dot", {opacity:0, y:0});
+        gsap.set("#dot-0", {backgroundColor:"#C9A44C", width:20});
+        gsap.set(["#dot-1","#dot-2","#dot-3","#dot-4","#dot-5","#dot-6","#dot-7"], {backgroundColor:"rgba(255,255,255,.15)", width:8});
+
+        const tl = gsap.timeline({repeat:-1, defaults:{ease:"power2.inOut"}});
+        tlRef.current = tl;
+
+        /* ===== SCENE 1 : HOMEPAGE ===== */
+        tl.addLabel("s1")
+          .to({}, {duration:1.0});
+        moveCursorTo(tl, "hero-cta");
+        tl.to({}, {duration:0.45});
+        pressRipple(tl, "hero-cta");
+        tl.to({}, {duration:0.35});
+        crossfade(tl, 1, 2, 1);
+
+        /* ===== SCENE 2 : SEARCH ===== */
+        tl.addLabel("s2")
+          .to("#search-typed .char", {opacity:1, y:0, duration:0.01, stagger:0.028})
+          .to({}, {duration:0.15});
+        moveCursorTo(tl, "chip-3");
+        tl.to({}, {duration:0.45});
+        pressRipple(tl, "chip-3");
+        tl.to({}, {duration:0.25});
+        tl.to("#card-1", {y:-4, borderColor:"rgba(201,164,76,.5)", duration:0.25}, "<");
+        moveCursorTo(tl, "card-1", -4, -6);
+        tl.to({}, {duration:0.45});
+        pressRipple(tl, "card-1");
+        tl.to({}, {duration:0.3});
+        crossfade(tl, 2, 3, 2);
+
+        /* ===== SCENE 3 : EVENT DETAILS ===== */
+        tl.addLabel("s3")
+          .to({}, {duration:0.1});
+        moveCursorTo(tl, "fav-heart", -2, -2);
+        tl.to({}, {duration:0.45});
+        pressRipple(tl, "fav-heart");
+        tl.to(".heart-icon", {fill:"#EAD08A", stroke:"#EAD08A", duration:0.25}, "<")
+          .to({}, {duration:0.35});
+        tl.to({}, {duration:0.15});
+        moveCursorTo(tl, "register-btn", -4, -2);
+        tl.to({}, {duration:0.45});
+        pressRipple(tl, "register-btn");
+        tl.to({}, {duration:0.3});
+        crossfade(tl, 3, 4, 3);
+
+        /* ===== SCENE 4 : CONFIRMATION ===== */
+        tl.addLabel("s4")
+          .to("#success-ring", {scale:1, duration:0.55, ease:"back.out(2.2)"})
+          .to(".confetti-dot", {opacity:1, y:-46, duration:0.55, stagger:0.02, ease:"power2.out"}, "<0.05")
+          .to(".confetti-dot", {opacity:0, y:-70, duration:0.4, stagger:0.02}, ">-0.1")
+          .to({}, {duration:0.25});
+        moveCursorTo(tl, "view-ticket-btn", -4, -2);
+        tl.to({}, {duration:0.45});
+        pressRipple(tl, "view-ticket-btn");
+        tl.to({}, {duration:0.3});
+        crossfade(tl, 4, 5, 4);
+
+        /* ===== SCENE 5 : QR TICKET ===== */
+        tl.addLabel("s5")
+          .to("#ticket-card", {scale:1, duration:0.6, ease:"back.out(1.6)"})
+          .to({}, {duration:0.5});
+        moveCursorTo(tl, "wallet-btn", -4, -2);
+        tl.to({}, {duration:0.45});
+        pressRipple(tl, "wallet-btn");
+        tl.to({}, {duration:0.35});
+        crossfade(tl, 5, 6, 5);
+
+        /* ===== SCENE 6 : QR CHECK-IN ===== */
+        tl.addLabel("s6")
+          .set("#mini-ticket", {opacity:0, x:70, y:70, scale:0.5})
+          .to("#mini-ticket", {opacity:1, x:0, y:0, scale:1, duration:0.6, ease:"power3.out"})
+          .to({}, {duration:0.55})
+          .to("#mini-ticket", {opacity:0, scale:0.9, duration:0.3})
+          .to(["#corner-0","#corner-1","#corner-2","#corner-3"], {borderColor:"#EAD08A", duration:0.15, yoyo:true, repeat:1}, "<")
+          .to("#checkin-success", {opacity:1, duration:0.3}, ">-0.1")
+          .to({}, {duration:0.5});
+        crossfade(tl, 6, 7, 6);
+
+        /* ===== SCENE 7 : CERTIFICATE ===== */
+        tl.addLabel("s7")
+          .to("#cert-name .char", {opacity:1, y:0, duration:0.01, stagger:0.035})
+          .to("#cert-seal", {y:0, scale:1, rotate:0, duration:0.6, ease:"back.out(2.4)"}, ">-0.1")
+          .to({}, {duration:0.4});
+        moveCursorTo(tl, "cert-download-btn", -4, -2);
+        tl.to({}, {duration:0.45});
+        pressRipple(tl, "cert-download-btn");
+        tl.to({}, {duration:0.3});
+        crossfade(tl, 7, 8, 7);
+
+        /* ===== SCENE 8 : COMMUNITY CHAT ===== */
+        tl.addLabel("s8")
+          .to("#msg-1", {opacity:1, y:0, duration:0.4})
+          .to("#msg-2", {opacity:1, y:0, duration:0.4}, ">-0.15")
+          .to("#typing-indicator", {opacity:1, duration:0.25}, ">0.15")
+          .to({}, {duration:0.4})
+          .to("#typing-indicator", {opacity:0, duration:0.2});
+        tl.to("#chat-input", {borderColor:"rgba(201,164,76,.5)", duration:0.2}, "<");
+        moveCursorTo(tl, "send-btn", -2, -2);
+        tl.to({}, {duration:0.45});
+        pressRipple(tl, "send-btn");
+        tl.to("#msg-3", {opacity:1, y:0, duration:0.4}, ">-0.05")
+          .to({}, {duration:0.4});
+
+        /* ===== LOOP BACK TO HOMEPAGE ===== */
+        tl.to("#scene-8", {opacity:0, scale:0.965, y:-14, duration:0.6})
+          .to("#scene-1", {opacity:1, scale:1, y:0, duration:0.6}, "<")
+          .to("#url-7", {opacity:0, duration:0.35}, "<")
+          .to("#url-0", {opacity:1, duration:0.35}, "<")
+          .to("#dot-7", {backgroundColor:"rgba(255,255,255,.15)", width:8, duration:0.3}, "<")
+          .to("#dot-0", {backgroundColor:"#C9A44C", width:20, duration:0.3}, "<")
+          .set(["#success-ring"], {scale:0})
+          .set("#mini-ticket", {opacity:0})
+          .set("#checkin-success", {opacity:0})
+          .set("#cert-seal", {y:-40, scale:0, rotate:-25})
+          .set(["#msg-1","#msg-2","#msg-3"], {opacity:0, y:10})
+          .set(".confetti-dot", {opacity:0, y:0})
+          .set("#search-typed .char", {opacity:0, y:4})
+          .set("#cert-name .char", {opacity:0, y:4})
+          .set("#ticket-card", {scale:0.92})
+          .set(["#chip-3"], {})
+          .set("#cursor", {left:"50%", top:"40%"})
+          ;
+      };
+
+      build();
+      let resizeT;
+      const onResize = () => { clearTimeout(resizeT); resizeT = setTimeout(build, 250); };
+      window.addEventListener("resize", onResize);
+
+      const vpEl = viewportRef.current;
+      const onEnter = () => tlRef.current && tlRef.current.pause();
+      const onLeave = () => tlRef.current && tlRef.current.play();
+      vpEl.addEventListener("mouseenter", onEnter);
+      vpEl.addEventListener("mouseleave", onLeave);
+
+      return () => {
+        window.removeEventListener("resize", onResize);
+        vpEl.removeEventListener("mouseenter", onEnter);
+        vpEl.removeEventListener("mouseleave", onLeave);
+      };
+    }, viewportRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <div className="min-h-screen w-full flex flex-col items-center justify-center py-6 px-4">
+      <div className="text-center mb-3">
+        <div className="font-mono text-[10px] tracking-[0.3em] text-[var(--gold)] uppercase">Product Showcase</div>
+      </div>
+      <BrowserChrome viewportRef={viewportRef}>
+        <SceneHomepage/>
+        <SceneSearch/>
+        <SceneDetails/>
+        <SceneConfirmation/>
+        <SceneTicket/>
+        <SceneCheckIn/>
+        <SceneCertificate/>
+        <SceneChat/>
+      </BrowserChrome>
+      <ProgressDots/>
+      <div className="font-ui text-white/25 text-[10px] mt-4">Discover → Search → Details → Confirm → Ticket → Check-in → Certificate → Community</div>
+    </div>
+  );
+};
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+<script>
+(function(){
+  function setTheme(dark){
+    document.documentElement.classList.toggle("light", !dark);
+  }
+  try{
+    if(window.parent && window.parent !== window){
+      var pDark = window.parent.document.documentElement.classList.contains("dark");
+      setTheme(pDark);
+    }
+  }catch(e){}
+  window.addEventListener("message", function(e){
+    if(e.data && typeof e.data.theme === "string"){
+      setTheme(e.data.theme === "dark");
+    }
+  });
+})();
+</script>
+</body>
+</html>

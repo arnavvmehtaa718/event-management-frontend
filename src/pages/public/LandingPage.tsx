@@ -14,9 +14,7 @@ import {
   CalendarCheck,
   ChevronRight,
   Star,
-  UserPlus,
   Ticket,
-  ScanLine,
 } from "lucide-react"
 import { getUpcomingEvents, getPopularEvents } from "@/api/eventApi"
 import type { EventItem } from "@/constants/types"
@@ -331,6 +329,7 @@ export default function LandingPage() {
                   Start organizing
                 </Button>
               </Link>
+
             </motion.div>
           </motion.div>
 
