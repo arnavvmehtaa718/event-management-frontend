@@ -62,6 +62,30 @@
   --sidebar-foreground: #b8b5ac;
   --sidebar-accent: #232320;
   --sidebar-accent-foreground: #ffffff;
+
+  /* Lifecycle section — light mode */
+  --lc-bg: #f6f5f2;
+  --lc-heading: #111110;
+  --lc-subtitle: #C58A00;
+  --lc-body: #525252;
+  --lc-grid: rgba(180,180,175,0.18);
+  --lc-ring: rgba(0,0,0,0.10);
+  --lc-path: rgba(0,0,0,0.15);
+  --lc-glow-stroke: rgba(197,138,0,0.18);
+  --lc-vignette: rgba(246,245,242,0.85);
+  --lc-node-bg: #ffffff;
+  --lc-node-border: #D1D5DB;
+  --lc-center-bg: #ffffff;
+  --lc-center-border: #C58A00;
+  --lc-card-bg: rgba(255,255,255,0.97);
+  --lc-card-border: rgba(0,0,0,0.08);
+  --lc-card-shadow: 0 8px 32px -4px rgba(0,0,0,0.08), 0 2px 8px -2px rgba(0,0,0,0.04);
+  --lc-card-heading: #111110;
+  --lc-card-step: #C58A00;
+  --lc-card-desc: rgba(0,0,0,0.55);
+  --lc-card-feature: rgba(0,0,0,0.45);
+  --lc-icon-bg: rgba(197,138,0,0.08);
+  --lc-icon-border: rgba(197,138,0,0.15);
 }
 
 .dark {
@@ -90,6 +114,28 @@
   --sidebar-foreground: #9d9b92;
   --sidebar-accent: #151513;
   --sidebar-accent-foreground: #ffffff;
+
+  /* Lifecycle section */
+  --lc-bg: #050505;
+  --lc-heading: #f2f1ed;
+  --lc-subtitle: #CCA300;
+  --lc-body: #6b6960;
+  --lc-grid: rgba(255,255,255,0.5);
+  --lc-ring: rgba(255,255,255,0.02);
+  --lc-path: rgba(255,255,255,0.08);
+  --lc-glow-stroke: rgba(255,213,74,0.35);
+  --lc-vignette: rgba(5,5,5,0.75);
+  --lc-node-bg: radial-gradient(circle at 35% 30%, rgba(255,213,74,0.14) 0%, rgba(255,213,74,0.04) 60%, rgba(10,10,10,0.9) 100%);
+  --lc-center-bg: radial-gradient(circle at 35% 30%, rgba(255,213,74,0.18) 0%, rgba(255,213,74,0.05) 50%, rgba(10,10,10,0.95) 100%);
+  --lc-card-bg: rgba(10,10,10,0.94);
+  --lc-card-border: rgba(255,255,255,0.07);
+  --lc-card-shadow: 0 24px 56px -12px rgba(0,0,0,0.7), 0 0 36px -8px rgba(255,213,74,0.05);
+  --lc-card-heading: #ffffff;
+  --lc-card-step: rgba(255,255,255,0.3);
+  --lc-card-desc: rgba(255,255,255,0.4);
+  --lc-card-feature: rgba(255,255,255,0.3);
+  --lc-icon-bg: rgba(255,213,74,0.06);
+  --lc-icon-border: rgba(255,213,74,0.12);
 }
 
 html {
@@ -241,4 +287,128 @@ body {
 
 .animate-pulse-glow {
   animation: pulse-glow 4s ease-in-out infinite;
+}
+
+/* ── Journey flow connector ── */
+.flow-line {
+  position: absolute;
+  left: 23px;
+  top: 52px;
+  bottom: -8px;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--primary), color-mix(in srgb, var(--primary) 20%, transparent));
+}
+.flow-line-short {
+  position: absolute;
+  left: 23px;
+  top: 52px;
+  height: 40px;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--primary), color-mix(in srgb, var(--primary) 20%, transparent));
+}
+
+/* ── Smooth accordion ── */
+.accordion-content {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease;
+}
+.accordion-content[data-open="true"] {
+  grid-template-rows: 1fr;
+}
+.accordion-content > div {
+  overflow: hidden;
+}
+
+/* ── Feature card number badge ── */
+.feature-number {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  z-index: 2;
+}
+
+/* ── Testimonial card slide ── */
+@keyframes testimonial-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.testimonial-track {
+  animation: testimonial-scroll 30s linear infinite;
+}
+.testimonial-track:hover {
+  animation-play-state: paused;
+}
+
+/* ── Feature marquee ── */
+@keyframes feature-marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.marquee-track {
+  animation: feature-marquee 30s linear infinite;
+}
+
+
+/* ── Number count-up helper ── */
+@property --num {
+  syntax: "<integer>";
+  inherits: false;
+  initial-value: 0;
+}
+
+/* ── Workflow node glow pulse ── */
+@keyframes node-glow {
+  0%, 100% { box-shadow: 0 0 8px var(--primary), 0 0 24px color-mix(in srgb, var(--primary) 40%, transparent); }
+  50% { box-shadow: 0 0 16px var(--primary), 0 0 40px color-mix(in srgb, var(--primary) 60%, transparent); }
+}
+.animate-node-glow {
+  animation: node-glow 2s ease-in-out infinite;
+}
+
+/* ── Gradient line flow ── */
+@keyframes line-flow {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.animate-line-flow {
+  background-size: 200% 100%;
+  animation: line-flow 3s linear infinite;
+}
+
+/* ── Fade in up ── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Shimmer effect ── */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--primary) 15%, transparent) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2.5s ease-in-out infinite;
+}
+
+/* ── Orbit animation for decorative elements ── */
+@keyframes orbit {
+  from { transform: rotate(0deg) translateX(120px) rotate(0deg); }
+  to { transform: rotate(360deg) translateX(120px) rotate(-360deg); }
+}
+.animate-orbit {
+  animation: orbit 12s linear infinite;
 }

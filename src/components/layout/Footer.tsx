@@ -1,7 +1,9 @@
+import { useState } from "react"
 import { Link } from "react-router-dom"
-import { Mail } from "lucide-react"
+import { Mail, ArrowRight } from "lucide-react"
 import { GithubIcon, LinkedinIcon } from "@/components/common/SocialIcons"
 import { Logo } from "@/components/common/Logo"
+import { Button, Input } from "@/components/common/ui"
 
 const groups = [
   {
@@ -31,11 +33,13 @@ const groups = [
 ]
 
 export function Footer() {
+  const [email, setEmail] = useState("")
+
   return (
     <footer className="relative border-t border-border">
       <div className="shimmer-line absolute top-0 left-0 right-0" aria-hidden="true" />
       <div className="mx-auto max-w-7xl px-4 py-16 md:px-6">
-        <div className="grid gap-10 lg:grid-cols-[1.2fr_1.8fr]">
+        <div className="grid gap-10 lg:grid-cols-[1.4fr_1.6fr]">
           <div className="max-w-sm">
             <Link to="/" className="flex items-center gap-2.5 font-extrabold tracking-tight text-foreground">
               <Logo className="h-8 w-8" />
@@ -44,6 +48,21 @@ export function Footer() {
             <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
               One connected platform for discovering events, seamless registration, QR check-in, and automatic certificates.
             </p>
+            <div className="mt-6">
+              <p className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider text-foreground">Stay updated</p>
+              <div className="flex gap-2">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@company.com"
+                  className="h-10 flex-1 rounded-lg border border-input bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-2 focus:outline-offset-1 focus:outline-ring"
+                />
+                <Button size="sm">
+                  <ArrowRight className="size-4" aria-hidden="true" />
+                </Button>
+              </div>
+            </div>
             <div className="mt-6 flex items-center gap-2">
               <a
                 href="https://github.com/arnavvmehtaa718"
@@ -79,7 +98,7 @@ export function Footer() {
                 <p className="font-mono text-xs font-semibold uppercase tracking-wider text-foreground">{group.title}</p>
                 {group.links.map((link) => (
                   <Link
-                    key={link.to}
+                    key={`${link.to}-${link.label}`}
                     to={link.to}
                     className="text-sm text-muted-foreground transition-colors duration-200 hover:text-foreground"
                   >
@@ -100,7 +119,6 @@ export function Footer() {
       <div className="border-t border-border py-5">
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 font-mono text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between md:px-6">
           <p>&copy; {new Date().getFullYear()} EventHub — all rights reserved</p>
-          <p>Designed for communities that bring people together.</p>
         </div>
       </div>
     </footer>

@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react"
-import { Card } from "@/components/common/ui"
+import { CardGlow } from "@/components/common/ui"
 import clsx from "clsx"
 
 export function StatCard({
@@ -14,11 +14,11 @@ export function StatCard({
   tone?: "primary" | "success" | "warning" | "destructive"
 }) {
   return (
-    <Card className="flex items-center gap-4 p-5">
+    <CardGlow className="flex items-center gap-4 rounded-2xl border border-border bg-card p-5 transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5">
       <span
         className={clsx(
-          "flex size-11 shrink-0 items-center justify-center rounded-lg",
-          tone === "primary" && "bg-accent text-accent-foreground",
+          "flex size-12 shrink-0 items-center justify-center rounded-xl",
+          tone === "primary" && "bg-primary/10 text-primary",
           tone === "success" && "bg-success/10 text-success",
           tone === "warning" && "bg-warning/10 text-warning",
           tone === "destructive" && "bg-destructive/10 text-destructive",
@@ -32,6 +32,6 @@ export function StatCard({
         </p>
         <p className="text-xs font-medium text-muted-foreground">{label}</p>
       </div>
-    </Card>
+    </CardGlow>
   )
 }

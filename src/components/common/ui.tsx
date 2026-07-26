@@ -1,6 +1,7 @@
-import { forwardRef, type ButtonHTMLAttributes, type InputHTMLAttributes, type ReactNode, type TextareaHTMLAttributes, type SelectHTMLAttributes } from "react"
+import { forwardRef, useEffect, useRef, useState, type ButtonHTMLAttributes, type InputHTMLAttributes, type ReactNode, type TextareaHTMLAttributes, type SelectHTMLAttributes } from "react"
 import clsx from "clsx"
 import { Loader2 } from "lucide-react"
+import { useReducedMotion, motion, useInView } from "framer-motion"
 
 /* ----------------------------- Button ----------------------------- */
 
@@ -200,6 +201,68 @@ export function EmptyState({ icon, title, description, action }: { icon?: ReactN
       <p className="font-semibold text-foreground">{title}</p>
       {description && <p className="max-w-sm text-sm text-muted-foreground text-pretty">{description}</p>}
       {action}
+    </div>
+  )
+}
+
+/* ----------------------------- CountUp ----------------------------- */
+
+export function CountUp({ target, suffix = "", prefix = "" }: { target: number; suffix?: string; prefix?: string }) {
+  const ref = useRef<HTMLSpanElement>(null)
+  const inView = useInView(ref, { once: true, amount: 0.5 })
+  const reduce = useReducedMotion()
+  const [value, setValue] = useState(0)
+
+  useEffect(() => {
+    if (reduce || !inView) { if (reduce) setValue(target); return }
+    let start = 0
+    const duration = 1200
+    const step = (ts: number) => {
+      if (!start) start = ts
+      const progress = Math.min((ts - start) / duration, 1)
+      const eased = 1 - Math.pow(1 - progress, 3)
+      setValue(Math.round(eased * target))
+      if (progress < 1) requestAnimationFrame(step)
+    }
+    requestAnimationFrame(step)
+  }, [inView, target, reduce])
+
+  return <span ref={ref}>{prefix}{value.toLocaleString()}{suffix}</span>
+}
+
+/* ----------------------------- CardGlow ----------------------------- */
+
+export function CardGlow({ className, children }: { className?: string; children: ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null)
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const el = ref.current
+    if (!el) return
+    const rect = el.getBoundingClientRect()
+    el.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`)
+    el.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`)
+  }
+
+  return (
+    <div
+      ref={ref}
+      onMouseMove={handleMouseMove}
+      className={clsx("card-glow", className)}
+    >
+      {children}
+    </div>
+  )
+}
+
+/* ----------------------------- StepConnector ----------------------------- */
+
+export function StepConnector({ className }: { className?: string }) {
+  return (
+    <div className={clsx("flex justify-center", className)}>
+      <div className="relative flex flex-col items-center">
+        <div className="h-8 w-px bg-gradient-to-b from-primary/60 to-primary/10" />
+        <div className="size-1.5 rounded-full bg-primary/40" />
+      </div>
     </div>
   )
 }

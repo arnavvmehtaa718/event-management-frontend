@@ -14,4 +14,18 @@ export default defineConfig({
     port: 3000,
     host: true,
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("three") || id.includes("@react-three")) {
+            return "three-vendor"
+          }
+          if (id.includes("gsap")) {
+            return "gsap-vendor"
+          }
+        },
+      },
+    },
+  },
 })

@@ -96,7 +96,7 @@ export function Navbar() {
               <Button variant="ghost" size="sm" onClick={() => navigate("/login")}>
                 Log in
               </Button>
-              <Button size="sm" onClick={() => navigate("/register")}>
+              <Button size="sm" onClick={() => navigate("/register")} className="shadow-lg shadow-primary/20">
                 Sign up free
               </Button>
             </>
